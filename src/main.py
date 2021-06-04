@@ -84,7 +84,7 @@ def get_reward_for_cell(row, col):
         return 0
 
     if is_wall((row, col)):
-        return 1000
+        return 1
 
     reward = 0
     reward_current_state = -1
