@@ -1,6 +1,6 @@
 from enum import Enum
 
-from src.board_state import BoardCell
+from src.board.board_state import BoardCell
 
 
 class Actions(Enum):

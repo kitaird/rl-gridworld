@@ -1,4 +1,4 @@
-from src.board_state import BoardCell
+from src.board.board_state import BoardCell
 
 
 def add_cells(cell1, cell2):

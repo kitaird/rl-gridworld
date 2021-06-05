@@ -4,7 +4,6 @@ import random
 from collections import UserList
 
 
-
 class DrlBoard(UserList):
     """
     A graphical user interface for 2d arrays (matrix)
@@ -71,7 +70,6 @@ class DrlBoard(UserList):
         self._canvas.bind("<ButtonPress>", self._mouse_click_clbk)
         self._command_stack = []
         self._iterate_command = None
-
 
     def __getitem__(self, row):             # subscript getter: self[row]
         # Store last accessed row (NOT thread safe... )
