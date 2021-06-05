@@ -1,5 +1,5 @@
-from src.dp_iteration_strategy import DpIterationStrategy
-from src.drl_board import DrlBoard
+from src.alorithms.dp_iteration_strategy import DpIterationStrategy
+from src.board.drl_board import DrlBoard
 
 data = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 1, 0, 1, 1, 1, 0, 0],

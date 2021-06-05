@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from src.board_state import BoardState
-from src.board_utils import BoardCalculationService
+from src.board.board_state import BoardState
+from src.board.board_service import BoardCalculationService
 
 
 class IterationStrategy(ABC):

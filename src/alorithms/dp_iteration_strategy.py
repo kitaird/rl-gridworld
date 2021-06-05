@@ -1,8 +1,8 @@
-from abstract_iteration_strategy import IterationStrategy
-from src.actions import Actions
-from src.board_printer import pretty_print_values
-from src.board_state import BoardCell
-from src.board_utils import add_cells
+from src.alorithms.abstract_iteration_strategy import IterationStrategy
+from src.board.actions import Actions
+from src.board.board_printer import pretty_print_values
+from src.board.board_state import BoardCell
+from src.board.board_service import add_cells
 
 
 class DpIterationStrategy(IterationStrategy):
@@ -24,7 +24,7 @@ class DpIterationStrategy(IterationStrategy):
             return 0
 
         if self._board_service.is_wall(cell):
-            return 1
+            return -1000
 
         reward = 0
         reward_current_state = -1
