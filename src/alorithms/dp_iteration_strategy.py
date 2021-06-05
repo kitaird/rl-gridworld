@@ -7,7 +7,7 @@ from src.board.board_service import add_cells
 
 class DpIterationStrategy(IterationStrategy):
 
-    def run_iteration(self, iterations=1):
+    def run_iteration(self, iterations=10):
         for i in range(iterations):
             new_rewards = self._board_service.init_rewards()
             for row in range(0, 6):
@@ -21,10 +21,10 @@ class DpIterationStrategy(IterationStrategy):
         probability_for_move = 1/len(Actions)
 
         if self._board_service.is_goal(cell):
-            return 0
+            return '0'
 
         if self._board_service.is_wall(cell):
-            return -1000
+            return '-'
 
         reward = 0
         reward_current_state = -1
@@ -35,7 +35,7 @@ class DpIterationStrategy(IterationStrategy):
                 next_cell = cell
             reward += probability_for_move * (reward_current_state + self.get_reward_from_last_rewards(next_cell))
 
-        return round(reward, 3)
+        return "{:100.3f}".format(reward)
 
     def get_reward_from_last_rewards(self, cell):
-        return self._last_rewards[cell.row][cell.col]
+        return float(self._last_rewards[cell.row][cell.col])

@@ -12,7 +12,7 @@ class BoardCalculationService:
         self._board_layout = board_layout
 
     def init_rewards(self):
-        return [[0.0 for _ in range(self._board_layout.cols)] for _ in range(self._board_layout.rows)]
+        return [['0.000' for _ in range(self._board_layout.cols)] for _ in range(self._board_layout.rows)]
 
     def is_goal(self, cell):
         return self._board_layout.layout[cell.row][cell.col] == 'g'
