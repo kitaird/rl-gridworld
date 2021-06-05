@@ -7,6 +7,9 @@ from src.board.board_service import add_cells
 
 class DpIterationStrategy(IterationStrategy):
 
+    def show_loss(self):
+        return self._last_rewards
+
     def run_iteration(self, iterations=10):
         for i in range(iterations):
             new_rewards = self._board_service.init_rewards()
@@ -35,7 +38,7 @@ class DpIterationStrategy(IterationStrategy):
                 next_cell = cell
             reward += probability_for_move * (reward_current_state + self.get_reward_from_last_rewards(next_cell))
 
-        return "{:100.3f}".format(reward)
+        return "{:1.3f}".format(reward)
 
     def get_reward_from_last_rewards(self, cell):
         return float(self._last_rewards[cell.row][cell.col])

@@ -16,3 +16,6 @@ class IterationStrategy(ABC):
     def run_iteration(self):
         pass
 
+    @abstractmethod
+    def show_loss(self):
+        pass
