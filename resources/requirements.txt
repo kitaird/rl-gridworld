@@ -1,3 +1,4 @@
 game2dboard==0.9.1
 tk==0.1.0
 tabulate==0.8.9
+numpy==1.20.3
