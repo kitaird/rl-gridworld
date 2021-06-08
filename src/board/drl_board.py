@@ -73,6 +73,8 @@ class DrlBoard(UserList):
         self._show_loss_command = None
         self._show_gradient_command = None
         self._show_grid_command = None
+        self._reset_command = None
+        self._last_show_command = None
 
     def __getitem__(self, row):             # subscript getter: self[row]
         # Store last accessed row (NOT thread safe... )
@@ -162,6 +164,14 @@ class DrlBoard(UserList):
     @show_loss_command.setter
     def show_loss_command(self, value):
         self._show_loss_command = value
+
+    @property
+    def reset_command(self):
+        return self._reset_command
+
+    @reset_command.setter
+    def reset_command(self, value):
+        self._reset_command = value
 
     @property
     def show_gradient_command(self):
@@ -615,14 +625,24 @@ class DrlBoard(UserList):
     def _setup_buttons(self):
         row_frame = Frame(self._root)
         row_frame.pack(side=TOP)
-        iterate_btn = Button(row_frame, text="Iterate", command=self._iterate_command)
+        iterate_btn = Button(row_frame, text="Iterate", command=lambda: self.action_wrapper(self._iterate_command))
         iterate_btn.pack(side=LEFT)
-        grid_btn = Button(row_frame, text="Show grid", command=self._show_grid_command)
+        grid_btn = Button(row_frame, text="Show grid", command=lambda: self.show_wrapper(self._show_grid_command))
         grid_btn.pack(side=LEFT)
-        loss_btn = Button(row_frame, text="Show loss", command=self._show_loss_command)
+        loss_btn = Button(row_frame, text="Show loss", command=lambda: self.show_wrapper(self._show_loss_command))
         loss_btn.pack(side=LEFT)
-        gradient_btn = Button(row_frame, text="Show gradient", command=self._show_gradient_command)
+        gradient_btn = Button(row_frame, text="Show gradient", command=lambda: self.show_wrapper(self._show_gradient_command))
         gradient_btn.pack(side=LEFT)
+        reset_btn = Button(row_frame, text="Reset", command=lambda: self.action_wrapper(self._reset_command))
+        reset_btn.pack(side=LEFT)
+
+    def action_wrapper(self, action_command):
+        action_command()
+        self._last_show_command()
+
+    def show_wrapper(self, show_command):
+        self._last_show_command = show_command
+        show_command()
 
     def _notify_change(self, row, col, new_value):
         if self._cells[row][col] != None:

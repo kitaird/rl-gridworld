@@ -109,6 +109,7 @@ board.on_mouse_click = reward_for_cell
 board.iterate_command = strategy.run_iteration
 board.show_loss_command = show_loss
 board.show_gradient_command = show_gradient
+board.reset_command = strategy.reset_rewards
 board.show_grid_command = show_grid
 board.load(data)
 board.show()

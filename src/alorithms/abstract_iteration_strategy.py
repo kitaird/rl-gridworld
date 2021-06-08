@@ -12,6 +12,9 @@ class IterationStrategy(ABC):
         self._board_service = BoardCalculationService(self._board_layout)
         self._last_rewards = self._board_service.init_rewards()
 
+    def reset_rewards(self):
+        self._last_rewards = self._board_service.init_rewards()
+
     @abstractmethod
     def run_iteration(self):
         pass
