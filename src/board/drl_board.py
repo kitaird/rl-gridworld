@@ -638,6 +638,8 @@ class DrlBoard(UserList):
 
     def action_wrapper(self, action_command):
         action_command()
+        if self._last_show_command is None:
+            self._last_show_command = self._show_grid_command
         self._last_show_command()
 
     def show_wrapper(self, show_command):
@@ -645,7 +647,7 @@ class DrlBoard(UserList):
         show_command()
 
     def _notify_change(self, row, col, new_value):
-        if self._cells[row][col] != None:
+        if self._cells[row][col] is not None:
             self._cells[row][col].value = new_value
 
     # Config the canvas size
