@@ -10,7 +10,7 @@ class DpIterationStrategy(IterationStrategy):
     def show_loss(self):
         return self._last_rewards
 
-    def run_iteration(self, iterations=10):
+    def run_iteration(self, iterations=5):
         for i in range(iterations):
             new_rewards = self._board_service.init_rewards()
             for row in range(0, 6):
