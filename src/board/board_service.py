@@ -7,18 +7,17 @@ def add_cells(cell1, cell2):
 
 class BoardCalculationService:
 
-    def __init__(self, board_layout) -> None:
-        super().__init__()
+    def __init__(self, board_layout):
         self._board_layout = board_layout
 
-    def init_rewards(self):
+    def init_state_values(self):
         return [['0.000' for _ in range(self._board_layout.cols)] for _ in range(self._board_layout.rows)]
 
     def is_goal(self, cell):
-        return self._board_layout.layout[cell.row][cell.col] == 'g'
+        return self._board_layout.get_field(cell) == 'g'
 
     def is_wall(self, cell):
-        return self._board_layout.layout[cell.row][cell.col] == 1
+        return self._board_layout.get_field(cell) == 1
 
     def is_outside_bounds(self, cell):
-        return cell.row < 0 or cell.row >= self._board_layout.rows or cell.col < 0 or cell.col >= self._board_layout.cols
+        return self._board_layout.is_outside_bounds(cell)

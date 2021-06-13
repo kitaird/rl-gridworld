@@ -1,4 +1,5 @@
 from src.alorithms.dp_iteration_strategy import DpIterationStrategy
+from src.board.board_state import BoardState
 
 from src.board.drl_board import DrlBoard
 
@@ -13,7 +14,8 @@ data = [['s', 0, 0, 0, 0, 0, 0, 0, 0],
 cols = 9
 rows = 6
 
-board = DrlBoard(DpIterationStrategy, data)
+init_data = BoardState(data)
+board = DrlBoard(DpIterationStrategy, init_data)
 board.show()
 
 # move = -1 reward

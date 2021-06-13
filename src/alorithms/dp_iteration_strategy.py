@@ -28,12 +28,12 @@ class DpIterationStrategy(IterationStrategy):
 
     def run_iteration_impl(self, iterations=5):
         for i in range(iterations):
-            new_rewards = self._board_service.init_rewards()
+            state_values = self._board_service.init_state_values()
             for row in range(0, 6):
                 for col in range(0, 9):
                     cell = BoardCell(row, col)
-                    new_rewards[row][col] = self._get_reward_for_cell(cell)
-            self._last_rewards = new_rewards
+                    state_values[row][col] = self._get_reward_for_cell(cell)
+            self.V = state_values
 
     def _get_reward_for_cell(self, cell):
         probability_for_move = 1/len(Actions)
@@ -51,9 +51,9 @@ class DpIterationStrategy(IterationStrategy):
             next_cell = add_cells(cell, action.value)
             if self._board_service.is_outside_bounds(next_cell) or self._board_service.is_wall(next_cell):
                 next_cell = cell
-            reward += probability_for_move * (reward_current_state + self.get_reward_from_last_rewards(next_cell))
+            reward += probability_for_move * (reward_current_state + self.get_last_state_value(next_cell))
 
         return "{:1.3f}".format(reward)
 
-    def get_reward_from_last_rewards(self, cell):
-        return float(self._last_rewards[cell.row][cell.col])
+    def get_last_state_value(self, cell):
+        return float(self.V[cell.row][cell.col])

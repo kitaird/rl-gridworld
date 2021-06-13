@@ -28,15 +28,15 @@ class DrlBoard(UserList):
 
         UserList.__init__(self)             # Initialize parent class
         # Create list [ncols][nrows]
-        nrows = len(init_data)
-        ncols = len(init_data[0])
+        nrows = init_data.rows
+        ncols = init_data.cols
         self.extend([self._BoardRow(ncols, self) for _ in range(nrows)])
 
         self._strategy = strategy_constructor(init_data)
         self._nrows = nrows
         self._ncols = ncols
         self._isrunning = False
-        self._init_data = init_data
+        self._init_data = init_data.layout
         # Array used to store cells elements (rectangles)
         self._cells = [[None] * ncols for _ in range(nrows)]
 

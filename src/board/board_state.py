@@ -19,6 +19,14 @@ class BoardState:
     def layout(self):
         return self._layout
 
+    def get_field(self, cell):
+        return self._layout[cell.row][cell.col]
+
+    def is_outside_bounds(self, cell):
+        outside_rows = cell.row < 0 or cell.row >= self.rows
+        outside_cols = cell.col < 0 or cell.col >= self.cols
+        return outside_rows or outside_cols
+
 
 class BoardCell:
 
