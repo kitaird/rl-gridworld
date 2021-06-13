@@ -82,7 +82,7 @@ class DrlBoard(UserList):
         self.init_board()
 
     def print_reward_for_cell(self, btn, row, col):
-        print("Loss for row[" + row + "] col[" + col + "] is" + self[row][col])
+        print("Data for row[" + row.__str__() + "] col[" + col.__str__() + "] is " + self[row][col].__str__())
 
     def init_board(self):
         self.title = "Grid world game!"
