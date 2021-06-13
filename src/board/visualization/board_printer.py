@@ -1,7 +1,5 @@
 import numpy as np
-import math
 from src.board.actions import Actions
-from src.board.board_service import get_new_state
 from src.board.board_state import State
 
 
@@ -16,19 +14,19 @@ def get_reward(state_values, cell, next_cell):
 
 
 def get_left_gradient(state_values, cell):
-    return get_reward(state_values, cell, get_new_state(cell, Actions.left))
+    return get_reward(state_values, cell, cell.apply(Actions.left))
 
 
 def get_right_gradient(state_values, cell):
-    return get_reward(state_values, cell, get_new_state(cell, Actions.right))
+    return get_reward(state_values, cell, cell.apply(Actions.right))
 
 
 def get_up_gradient(state_values, cell):
-    return get_reward(state_values, cell, get_new_state(cell, Actions.up))
+    return get_reward(state_values, cell, cell.apply(Actions.up))
 
 
 def get_down_gradient(state_values, cell):
-    return get_reward(state_values, cell, get_new_state(cell, Actions.down))
+    return get_reward(state_values, cell, cell.apply(Actions.down))
 
 
 def more_than_one_true(b1, b2, b3, b4):
