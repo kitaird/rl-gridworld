@@ -2,7 +2,6 @@
 class BoardState:
 
     def __init__(self, board_layout) -> None:
-        super().__init__()
         self._rows = len(board_layout)
         self._cols = len(board_layout[0])
         self._layout = board_layout
@@ -28,10 +27,9 @@ class BoardState:
         return outside_rows or outside_cols
 
 
-class BoardCell:
+class State:
 
-    def __init__(self, row, col) -> None:
-        super().__init__()
+    def __init__(self, row, col):
         self._row = row
         self._col = col
 
