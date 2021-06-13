@@ -75,7 +75,7 @@ class DrlBoard(UserList):
         self._canvas.bind("<ButtonPress>", self._mouse_click_clbk)
         if self._init_data:
             self.show_grid()
-        self._gradient_service = BoardPrinter(self)
+        self._board_printer = BoardPrinter(self)
         self._command_stack = []
         self._last_show_command = None
         self.on_mouse_click = self.print_reward_for_cell
@@ -616,9 +616,9 @@ class DrlBoard(UserList):
         iterate_btn.pack(side=LEFT)
         grid_btn = Button(row_frame, text="Show grid", command=lambda: self.show_wrapper(self.show_grid))
         grid_btn.pack(side=LEFT)
-        loss_btn = Button(row_frame, text="Show loss", command=lambda: self.show_wrapper(self._gradient_service.show_loss))
+        loss_btn = Button(row_frame, text="Show loss", command=lambda: self.show_wrapper(self._board_printer.show_loss))
         loss_btn.pack(side=LEFT)
-        gradient_btn = Button(row_frame, text="Show gradient", command=lambda: self.show_wrapper(self._gradient_service.show_gradient))
+        gradient_btn = Button(row_frame, text="Show gradient", command=lambda: self.show_wrapper(self._board_printer.show_gradient))
         gradient_btn.pack(side=LEFT)
         reset_btn = Button(row_frame, text="Reset", command=lambda: self.action_wrapper(self._strategy.reset_rewards))
         reset_btn.pack(side=LEFT)

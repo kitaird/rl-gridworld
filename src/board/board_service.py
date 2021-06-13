@@ -1,8 +1,8 @@
-from src.board.board_state import BoardCell
+from src.board.board_state import State
 
 
-def add_cells(cell1, cell2):
-    return BoardCell(cell1.row + cell2.row, cell1.col + cell2.col)
+def get_new_state(cell, action):
+    return State(cell.row + action.value.row, cell.col + action.value.col)
 
 
 class BoardCalculationService:
