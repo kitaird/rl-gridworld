@@ -6,7 +6,21 @@ from src.board.board_service import add_cells
 
 
 class DpIterationStrategy(IterationStrategy):
+    """
+        This is the dynamic programming strategy
+        Available domain knowledge are the following:
 
+            Reward per step = -1
+            Reward for step into wall = -1
+            Reward for step outside boundaries = -1
+            Reward for step into goal = 0
+
+            A step moves the agent into a new field
+            If the new field is a wall or outside a boundary,
+                the agent remains in the same field but still gets a respective reward
+
+            Game over when step into goal
+    """
     def show_loss(self):
         return self._last_rewards
 
