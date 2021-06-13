@@ -1,6 +1,6 @@
 from src.alorithms.abstract_iteration_strategy import IterationStrategy
 from src.board.actions import Actions
-from src.board.board_printer import pretty_print_values
+from src.board.visualization.console_printer import pretty_print_to_console
 from src.board.board_state import BoardCell
 from src.board.board_service import add_cells
 
@@ -18,7 +18,7 @@ class DpIterationStrategy(IterationStrategy):
                     cell = BoardCell(row, col)
                     new_rewards[row][col] = self._get_reward_for_cell(cell)
             self._last_rewards = new_rewards
-        pretty_print_values(self._last_rewards)
+        pretty_print_to_console(self._last_rewards)
 
     def _get_reward_for_cell(self, cell):
         probability_for_move = 1/len(Actions)

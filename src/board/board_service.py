@@ -20,6 +20,5 @@ class BoardCalculationService:
     def is_wall(self, cell):
         return self._board_layout.layout[cell.row][cell.col] == 1
 
-    def is_outside_bounds(self,  cell):
+    def is_outside_bounds(self, cell):
         return cell.row < 0 or cell.row >= self._board_layout.rows or cell.col < 0 or cell.col >= self._board_layout.cols
-
