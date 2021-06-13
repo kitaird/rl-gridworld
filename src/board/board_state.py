@@ -18,6 +18,12 @@ class BoardState:
     def layout(self):
         return self._layout
 
+    def is_goal(self, cell):
+        return self.get_field(cell) == 'g'
+
+    def is_wall(self, cell):
+        return self.get_field(cell) == 1
+
     def get_field(self, cell):
         return self._layout[cell.row][cell.col]
 
@@ -41,3 +47,6 @@ class State:
     def col(self):
         return self._col
 
+    def apply(self, action):
+        return State(self._row + action.value.row,
+                     self._col + action.value.col)
