@@ -3,6 +3,8 @@ import game2dboard
 import random
 from collections import UserList
 
+from src.board.visualization.board_printer import BoardPrinter
+
 
 class DrlBoard(UserList):
     """
@@ -11,8 +13,8 @@ class DrlBoard(UserList):
 
     def __init__(
             self,
-            nrows,
-            ncols):
+            strategy_constructor,
+            init_data):
         """
 
         Creates an App
@@ -26,12 +28,15 @@ class DrlBoard(UserList):
 
         UserList.__init__(self)             # Initialize parent class
         # Create list [ncols][nrows]
+        nrows = len(init_data)
+        ncols = len(init_data[0])
         self.extend([self._BoardRow(ncols, self) for _ in range(nrows)])
 
+        self._strategy = strategy_constructor(init_data)
         self._nrows = nrows
         self._ncols = ncols
         self._isrunning = False
-
+        self._init_data = init_data
         # Array used to store cells elements (rectangles)
         self._cells = [[None] * ncols for _ in range(nrows)]
 
@@ -68,13 +73,21 @@ class DrlBoard(UserList):
         self._root.bind("<Key>", self._key_press_clbk)
         # register internal mouse callback
         self._canvas.bind("<ButtonPress>", self._mouse_click_clbk)
+        if self._init_data:
+            self.show_grid()
+        self._gradient_service = BoardPrinter(self)
         self._command_stack = []
-        self._iterate_command = None
-        self._show_loss_command = None
-        self._show_gradient_command = None
-        self._show_grid_command = None
-        self._reset_command = None
         self._last_show_command = None
+        self.on_mouse_click = self.print_reward_for_cell
+        self.init_board()
+
+    def print_reward_for_cell(self, btn, row, col):
+        print("Loss for row[" + row + "] col[" + col + "] is" + self[row][col])
+
+    def init_board(self):
+        self.title = "Grid world game!"
+        self.cell_size = 90
+        self.cell_color = "white"
 
     def __getitem__(self, row):             # subscript getter: self[row]
         # Store last accessed row (NOT thread safe... )
@@ -150,44 +163,18 @@ class DrlBoard(UserList):
         self._root.title(value)
 
     @property
-    def iterate_command(self):
-        return self._iterate_command
+    def strategy(self):
+        return self._strategy
 
-    @iterate_command.setter
-    def iterate_command(self, value):
-        self._iterate_command = value
+    @strategy.setter
+    def strategy(self, value):
+        self._strategy = value
 
-    @property
-    def show_loss_command(self):
-        return self._show_loss_command
+    def fill_field(self, row, col, value):
+        self[row][col] = value
 
-    @show_loss_command.setter
-    def show_loss_command(self, value):
-        self._show_loss_command = value
-
-    @property
-    def reset_command(self):
-        return self._reset_command
-
-    @reset_command.setter
-    def reset_command(self, value):
-        self._reset_command = value
-
-    @property
-    def show_gradient_command(self):
-        return self._show_gradient_command
-
-    @show_gradient_command.setter
-    def show_gradient_command(self, value):
-        self._show_gradient_command = value
-
-    @property
-    def show_grid_command(self):
-        return self._show_grid_command
-
-    @show_grid_command.setter
-    def show_grid_command(self, value):
-        self._show_grid_command = value
+    def show_grid(self):
+        self.load(self._init_data)
 
     @property
     def cursor(self):
@@ -625,21 +612,21 @@ class DrlBoard(UserList):
     def _setup_buttons(self):
         row_frame = Frame(self._root)
         row_frame.pack(side=TOP)
-        iterate_btn = Button(row_frame, text="Iterate", command=lambda: self.action_wrapper(self._iterate_command))
+        iterate_btn = Button(row_frame, text="Iterate", command=lambda: self.action_wrapper(self._strategy.run_iteration))
         iterate_btn.pack(side=LEFT)
-        grid_btn = Button(row_frame, text="Show grid", command=lambda: self.show_wrapper(self._show_grid_command))
+        grid_btn = Button(row_frame, text="Show grid", command=lambda: self.show_wrapper(self.show_grid))
         grid_btn.pack(side=LEFT)
-        loss_btn = Button(row_frame, text="Show loss", command=lambda: self.show_wrapper(self._show_loss_command))
+        loss_btn = Button(row_frame, text="Show loss", command=lambda: self.show_wrapper(self._gradient_service.show_loss))
         loss_btn.pack(side=LEFT)
-        gradient_btn = Button(row_frame, text="Show gradient", command=lambda: self.show_wrapper(self._show_gradient_command))
+        gradient_btn = Button(row_frame, text="Show gradient", command=lambda: self.show_wrapper(self._gradient_service.show_gradient))
         gradient_btn.pack(side=LEFT)
-        reset_btn = Button(row_frame, text="Reset", command=lambda: self.action_wrapper(self._reset_command))
+        reset_btn = Button(row_frame, text="Reset", command=lambda: self.action_wrapper(self._strategy.reset_rewards))
         reset_btn.pack(side=LEFT)
 
     def action_wrapper(self, action_command):
         action_command()
         if self._last_show_command is None:
-            self._last_show_command = self._show_grid_command
+            self._last_show_command = self.show_grid
         self._last_show_command()
 
     def show_wrapper(self, show_command):
