@@ -21,10 +21,8 @@ class DpIterationStrategy(IterationStrategy):
 
             Game over when step into goal
     """
-    def show_loss(self):
-        return self._last_rewards
 
-    def run_iteration(self, iterations=5):
+    def run_iteration_impl(self, iterations=5):
         for i in range(iterations):
             new_rewards = self._board_service.init_rewards()
             for row in range(0, 6):
@@ -32,7 +30,6 @@ class DpIterationStrategy(IterationStrategy):
                     cell = BoardCell(row, col)
                     new_rewards[row][col] = self._get_reward_for_cell(cell)
             self._last_rewards = new_rewards
-        pretty_print_to_console(self._last_rewards)
 
     def _get_reward_for_cell(self, cell):
         probability_for_move = 1/len(Actions)
