@@ -1,6 +1,6 @@
-from src.alorithms.dp_iteration_strategy import DpIterationStrategy
-from src.board.drl_board import DrlBoard
-from src.board.environment import Environment
+from src.agent.dp_iteration_strategy import DpIterationStrategy
+from src.visualization.drl_board import DrlBoard
+from src.env.environment import Environment
 
 board_layout = [['s', 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 1, 1, 1, 0, 0],

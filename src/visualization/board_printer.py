@@ -1,6 +1,6 @@
 import numpy as np
-from src.board.actions import Actions
-from src.board.state import State
+from src.env.actions import Actions
+from src.env.state import State
 
 
 class BoardPrinter:

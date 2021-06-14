@@ -1,6 +1,6 @@
 from enum import Enum
 
-from src.board.state import State
+from src.env.state import State
 
 
 class Actions(Enum):
