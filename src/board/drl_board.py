@@ -37,6 +37,7 @@ class DrlBoard(UserList):
         self._ncols = ncols
         self._isrunning = False
         self._init_data = environment.layout
+        self._env = environment
         # Array used to store cells elements (rectangles)
         self._cells = [[None] * ncols for _ in range(nrows)]
 
@@ -166,9 +167,9 @@ class DrlBoard(UserList):
     def agent(self):
         return self._agent
 
-    @agent.setter
-    def agent(self, value):
-        self._agent = value
+    @property
+    def env(self):
+        return self._env
 
     def fill_field(self, row, col, value):
         self[row][col] = value

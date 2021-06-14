@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from src.board.state import State
 from src.board.visualization.console_printer import pretty_print_to_console
 
 
@@ -13,7 +14,7 @@ class IterationStrategy(ABC):
         self._state_values = self.get_init_rewards()
 
     def get_init_rewards(self):
-        return [['0.000' for _ in range(self._env.cols)] for _ in range(self._env.rows)]
+        return [[State(r, c) for c in range(self._env.cols)] for r in range(self._env.rows)]
 
     def run_iteration(self):
         self.run_iteration_impl()
