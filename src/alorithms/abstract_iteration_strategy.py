@@ -5,16 +5,15 @@ from src.board.visualization.console_printer import pretty_print_to_console
 
 class IterationStrategy(ABC):
 
-    def __init__(self, board_layout):
-        self._board_layout = board_layout
-        self._state_values = None
-        self.reset_rewards()
+    def __init__(self, env):
+        self._env = env
+        self._state_values = self.get_init_rewards()
 
     def reset_rewards(self):
         self._state_values = self.get_init_rewards()
 
     def get_init_rewards(self):
-        return [['0.000' for _ in range(self._board_layout.cols)] for _ in range(self._board_layout.rows)]
+        return [['0.000' for _ in range(self._env.cols)] for _ in range(self._env.rows)]
 
     def run_iteration(self):
         self.run_iteration_impl()

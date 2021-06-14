@@ -1,6 +1,5 @@
 from src.alorithms.abstract_iteration_strategy import IterationStrategy
-from src.board.actions import Actions
-from src.board.board_state import State
+from src.board.state import State
 import numpy as np
 
 
@@ -31,20 +30,20 @@ class DpIterationStrategy(IterationStrategy):
             for row in range(0, 6):
                 for col in range(0, 9):
                     cell = State(row, col)
-                    if not self._board_layout.is_wall(cell):
+                    if not self._env.is_wall(cell):
                         state_values[row][col] = self.state_value(cell)
                     else:
                         state_values[row][col] = np.nan
             self._state_values = state_values
 
     def state_value(self, cell):
-        if self._board_layout.is_goal(cell):
+        if self._env.is_goal(cell):
             return '0'
 
-        probability_for_move = 1 / len(Actions)
+        probability_for_move = 1 / self._env.actions_dim
         cumulative_reward = 0
 
-        for action in Actions:
+        for action in self._env.actions:
             cumulative_reward += probability_for_move * self.action_value(cell, action)
 
         return "{:1.3f}".format(cumulative_reward)
@@ -52,12 +51,12 @@ class DpIterationStrategy(IterationStrategy):
     def action_value(self, state, action):
         reward_any_step = -1
 
-        if self._board_layout.is_wall(state):
+        if self._env.is_wall(state):
             return
 
         next_state = state.apply(action)
 
-        if self._board_layout.is_outside_bounds(next_state) or self._board_layout.is_wall(next_state):
+        if self._env.is_outside_bounds(next_state) or self._env.is_wall(next_state):
             next_state = state
 
         return reward_any_step + self.state_value_table_lookup(next_state)

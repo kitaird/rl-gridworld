@@ -1,6 +1,6 @@
 import numpy as np
 from src.board.actions import Actions
-from src.board.board_state import State
+from src.board.state import State
 
 
 def get_reward(state_values, cell, next_cell):
@@ -41,11 +41,11 @@ class BoardPrinter:
 
     def __init__(self, drl_board):
         self._board = drl_board
-        self._strategy = drl_board.strategy
+        self._agent = drl_board.agent
 
     def show_gradient(self):
         self._board.show_grid()
-        state_values = self._strategy.state_values()
+        state_values = self._agent.state_values()
         for row in range(len(state_values)):
             for col in range(len(state_values[0])):
                 left = get_left_gradient(state_values, State(row, col))
@@ -79,7 +79,7 @@ class BoardPrinter:
 
     def show_loss(self):
         self._board.show_grid()
-        state_values = self._strategy.state_values()
+        state_values = self._agent.state_values()
         for row in range(len(state_values)):
             for col in range(len(state_values[0])):
                 val = state_values[row][col]
