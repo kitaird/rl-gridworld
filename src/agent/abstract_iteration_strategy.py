@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from src.board.state import State
-from src.board.visualization.console_printer import pretty_print_to_console
+from src.env.state import State
+from src.visualization.console_printer import pretty_print_to_console
 
 
 class IterationStrategy(ABC):

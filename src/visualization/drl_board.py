@@ -3,7 +3,7 @@ import game2dboard
 import random
 from collections import UserList
 
-from src.board.visualization.board_printer import BoardPrinter
+from src.visualization.board_printer import BoardPrinter
 
 
 class DrlBoard(UserList):

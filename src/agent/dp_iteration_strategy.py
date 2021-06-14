@@ -1,5 +1,4 @@
-from src.alorithms.abstract_iteration_strategy import IterationStrategy
-from src.board.state import State
+from src.agent.abstract_iteration_strategy import IterationStrategy
 import numpy as np
 
 

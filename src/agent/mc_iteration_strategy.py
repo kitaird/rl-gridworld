@@ -1,4 +1,4 @@
-from src.alorithms.abstract_iteration_strategy import IterationStrategy
+from src.agent.abstract_iteration_strategy import IterationStrategy
 
 
 class McIterationStrategy(IterationStrategy):
@@ -13,4 +13,10 @@ class McIterationStrategy(IterationStrategy):
 
     def run_iteration_impl(self, iterations=100):
 
+        pass
+
+    def state_value(self, state):
+        pass
+
+    def action_value(self, state, action):
         pass

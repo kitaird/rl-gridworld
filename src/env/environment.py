@@ -1,4 +1,4 @@
-from src.board.actions import Actions
+from src.env.actions import Actions
 
 
 class Environment:
