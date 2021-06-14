@@ -13,8 +13,8 @@ class DrlBoard(UserList):
 
     def __init__(
             self,
-            strategy_constructor,
-            init_data):
+            agent,
+            environment):
         """
 
         Creates an App
@@ -28,15 +28,15 @@ class DrlBoard(UserList):
 
         UserList.__init__(self)             # Initialize parent class
         # Create list [ncols][nrows]
-        nrows = init_data.rows
-        ncols = init_data.cols
+        nrows = environment.rows
+        ncols = environment.cols
         self.extend([self._BoardRow(ncols, self) for _ in range(nrows)])
 
-        self._strategy = strategy_constructor(init_data)
+        self._agent = agent
         self._nrows = nrows
         self._ncols = ncols
         self._isrunning = False
-        self._init_data = init_data.layout
+        self._init_data = environment.layout
         # Array used to store cells elements (rectangles)
         self._cells = [[None] * ncols for _ in range(nrows)]
 
@@ -163,12 +163,12 @@ class DrlBoard(UserList):
         self._root.title(value)
 
     @property
-    def strategy(self):
-        return self._strategy
+    def agent(self):
+        return self._agent
 
-    @strategy.setter
-    def strategy(self, value):
-        self._strategy = value
+    @agent.setter
+    def agent(self, value):
+        self._agent = value
 
     def fill_field(self, row, col, value):
         self[row][col] = value
@@ -612,7 +612,7 @@ class DrlBoard(UserList):
     def _setup_buttons(self):
         row_frame = Frame(self._root)
         row_frame.pack(side=TOP)
-        iterate_btn = Button(row_frame, text="Iterate", command=lambda: self.action_wrapper(self._strategy.run_iteration))
+        iterate_btn = Button(row_frame, text="Iterate", command=lambda: self.action_wrapper(self._agent.run_iteration))
         iterate_btn.pack(side=LEFT)
         grid_btn = Button(row_frame, text="Show grid", command=lambda: self.show_wrapper(self.show_grid))
         grid_btn.pack(side=LEFT)
@@ -620,7 +620,7 @@ class DrlBoard(UserList):
         loss_btn.pack(side=LEFT)
         gradient_btn = Button(row_frame, text="Show gradient", command=lambda: self.show_wrapper(self._board_printer.show_gradient))
         gradient_btn.pack(side=LEFT)
-        reset_btn = Button(row_frame, text="Reset", command=lambda: self.action_wrapper(self._strategy.reset_rewards))
+        reset_btn = Button(row_frame, text="Reset", command=lambda: self.action_wrapper(self._agent.reset_rewards))
         reset_btn.pack(side=LEFT)
 
     def action_wrapper(self, action_command):
