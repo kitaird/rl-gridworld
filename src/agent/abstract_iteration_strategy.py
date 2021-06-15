@@ -24,17 +24,6 @@ class IterationStrategy(ABC):
                 random_init_policy[state_copy] = np.random.choice(Actions)
         return random_init_policy
 
-    # def random_init_rewards(self):
-    #     random_init_state_values = {}
-    #     for state in self._env.states.values():
-    #         if not state.is_wall:
-    #             state_copy = state.clone()
-    #             if state_copy.is_goal:
-    #                 random_init_state_values[state_copy] = 0
-    #             else:
-    #                 random_init_state_values[state_copy] = np.random.random()
-    #     return random_init_state_values
-
     def reset(self):
         print("Reset!")
         self._state_values = self.init_state_values()
