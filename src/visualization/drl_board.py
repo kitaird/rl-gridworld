@@ -3,8 +3,6 @@ import game2dboard
 import random
 from collections import UserList
 
-from src.visualization.board_printer import BoardPrinter
-
 
 class DrlBoard(UserList):
     """
@@ -36,7 +34,7 @@ class DrlBoard(UserList):
         self._nrows = nrows
         self._ncols = ncols
         self._isrunning = False
-        self._init_data = environment.layout
+        self._init_data = environment.init_data
         self._env = environment
         # Array used to store cells elements (rectangles)
         self._cells = [[None] * ncols for _ in range(nrows)]
@@ -76,7 +74,6 @@ class DrlBoard(UserList):
         self._canvas.bind("<ButtonPress>", self._mouse_click_clbk)
         if self._init_data:
             self.show_grid()
-        self._board_printer = BoardPrinter(self)
         self._command_stack = []
         self._last_show_command = None
         self.on_mouse_click = self.print_reward_for_cell
@@ -613,26 +610,42 @@ class DrlBoard(UserList):
     def _setup_buttons(self):
         row_frame = Frame(self._root)
         row_frame.pack(side=TOP)
-        iterate_btn = Button(row_frame, text="Iterate", command=lambda: self.action_wrapper(self._agent.run_iteration))
+        iterate_btn = Button(row_frame, text="Iterate", command=self.iterate_action)
         iterate_btn.pack(side=LEFT)
         grid_btn = Button(row_frame, text="Show grid", command=lambda: self.show_wrapper(self.show_grid))
         grid_btn.pack(side=LEFT)
-        loss_btn = Button(row_frame, text="Show loss", command=lambda: self.show_wrapper(self._board_printer.show_loss))
+        loss_btn = Button(row_frame, text="Show state values", command=lambda: self.show_wrapper(self.show_state_values))
         loss_btn.pack(side=LEFT)
-        gradient_btn = Button(row_frame, text="Show gradient", command=lambda: self.show_wrapper(self._board_printer.show_gradient))
+        gradient_btn = Button(row_frame, text="Show policy", command=lambda: self.show_wrapper(self.show_policy))
         gradient_btn.pack(side=LEFT)
-        reset_btn = Button(row_frame, text="Reset", command=lambda: self.action_wrapper(self._agent.reset_rewards))
+        reset_btn = Button(row_frame, text="Reset", command=self.reset_action)
         reset_btn.pack(side=LEFT)
 
-    def action_wrapper(self, action_command):
-        action_command()
+    def reset_action(self):
+        self._agent.reset()
+        if self._last_show_command is None:
+            self._last_show_command = self.show_grid
+        self._last_show_command()
+
+    def iterate_action(self):
+        self._agent.run_iteration()
         if self._last_show_command is None:
             self._last_show_command = self.show_grid
         self._last_show_command()
 
     def show_wrapper(self, show_command):
         self._last_show_command = show_command
+        self.show_grid()
         show_command()
+
+    def show_state_values(self):
+        for state, state_value in self._agent.state_values.items():
+            if state_value:
+                self.fill_field(state.row, state.col, "{:1.3f}".format(state_value))
+
+    def show_policy(self):
+        for state, action in self._agent.policy.items():
+            self.fill_field(state.row, state.col, 'g' if state.is_goal else action.name)
 
     def _notify_change(self, row, col, new_value):
         if self._cells[row][col] is not None:

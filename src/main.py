@@ -1,16 +1,17 @@
 from src.agent.dp_iteration_strategy import DpIterationStrategy
+from src.agent.mc_iteration_strategy import McIterationStrategy
 from src.visualization.drl_board import DrlBoard
 from src.env.environment import Environment
 
-board_layout = [['s', 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 1, 0, 1, 1, 1, 0, 0],
-                [0, 0, 1, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 1, 0, 0, 0, 1, 1, 1],
-                [0, 0, 0, 0, 0, 0, 0, 0, 'g']]
+init_data = [['a', 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 1, 0, 1, 1, 1, 0, 0],
+             [0, 0, 1, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 1, 0, 0, 0, 1, 1, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 'g']]
 
-env = Environment(board_layout)
-agent = DpIterationStrategy(env)
+env = Environment(init_data)
+agent = McIterationStrategy(env)
 
 board = DrlBoard(agent, env)
 board.show()

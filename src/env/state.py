@@ -1,9 +1,10 @@
 class State:
 
-    def __init__(self, row, col, val=None):
+    def __init__(self, row, col, is_goal=False, is_wall=False):
         self._row = row
         self._col = col
-        self._val = val
+        self._is_goal = is_goal
+        self._is_wall = is_wall
 
     @property
     def row(self):
@@ -14,22 +15,30 @@ class State:
         return self._col
 
     @property
-    def val(self):
-        return self._val
+    def is_wall(self):
+        return self._is_wall
 
-    @val.setter
-    def val(self, value):
-        self._val = value
-
-    def has_val(self):
-        return self._val is not None
+    @property
+    def is_goal(self):
+        return self._is_goal
 
     def apply(self, action):
-        return State(self._row + action.value.row,
-                     self._col + action.value.col)
+        return (self._row + action.value.row,
+                self._col + action.value.col)
+
+    def clone(self):
+        return State(self._row, self._col, self._is_goal, self._is_wall)
 
     def __str__(self):
         msg = "{"
-        position = "row: "+self._row.__str__()+" , col: " + self._col.__str__()
-        value = " , val: " + self._val.__str__() if self.has_val else ""
-        return msg + position + value + "}"
+        position = "row: " + self._row.__str__() + " , col: " + self._col.__str__()
+        return msg + position + "}"
+
+    def __hash__(self):
+        return hash((self._row, self._col))
+
+    def __eq__(self, other):
+        return (self._row, self._col) == (other.row, other.col)
+
+    def __ne__(self, other):
+        return not (self == other)
