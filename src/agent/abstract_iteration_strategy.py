@@ -13,6 +13,7 @@ class IterationStrategy(ABC):
     def __init__(self, env):
         self._env = env
         self._state_values = self.init_state_values()
+        self._allowed_actions = self.get_allowed_actions()
         self._policy = self.random_init_policy()
         self._deltas = []
 

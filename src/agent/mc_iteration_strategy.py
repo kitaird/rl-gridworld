@@ -23,7 +23,6 @@ class McIterationStrategy(IterationStrategy):
     def __init__(self, env):
         super().__init__(env)
         self._returns = self.init_returns()
-        self._allowed_actions = self.get_allowed_actions()
         self._policy = self.random_init_policy_only_allowed_states()
 
     def discount_factor(self):
