@@ -26,10 +26,15 @@ class DpIterationStrategy(IterationStrategy):
     def discount_factor(self):
         return 0.75
 
-    def run_iteration_impl(self, iterations=5):
-        for _ in range(iterations):
-            self.policy_evaluation()
-            self.policy_improvement()
+    def get_iteration_size(self):
+        return 5
+
+    def get_agent_name(self):
+        return "Dynamic Programming"
+
+    def run_iteration_impl(self):
+        self.policy_evaluation()
+        self.policy_improvement()
 
     def policy_evaluation(self):
         state_values = self.init_state_values()
@@ -37,7 +42,7 @@ class DpIterationStrategy(IterationStrategy):
         evaluation_done = False
         while not evaluation_done:
             biggest_change = 0
-            for state in self._env.states.values():
+            for state in self.env.states.values():
                 if not state.is_wall:
                     old_state_value = state_values[state]
                     new_state_value = self.state_value(state)
@@ -56,7 +61,7 @@ class DpIterationStrategy(IterationStrategy):
                     old_action = self._policy[state]
                     new_action = None
                     best_value = float('-inf')
-                    for action in self._env.actions:
+                    for action in self.env.actions:
                         state_value = self.action_value(state, action)
                         if state_value > best_value:
                             best_value = state_value
@@ -74,12 +79,12 @@ class DpIterationStrategy(IterationStrategy):
         if state.is_wall:
             raise ValueError("Error should not be wall!")
 
-        probability_for_move = 1 / self._env.actions_dim
+        probability_for_move = 1 / self.env.actions_dim
         cumulative_reward = 0
 
-        for action in self._env.actions:
-            next_state, reward = self._env.get_new_state_and_reward(state, action)
-            next_state_val = self.discount_factor() * self.state_value_table_lookup(next_state)
+        for action in self.env.actions:
+            next_state, reward = self.env.get_new_state_and_reward(state, action)
+            next_state_val = self.discount_factor() * self._state_values[next_state]
             cumulative_reward += probability_for_move * (reward + next_state_val)
 
         return cumulative_reward
@@ -91,10 +96,7 @@ class DpIterationStrategy(IterationStrategy):
         if state.is_wall:
             raise ValueError("Error should not be wall!")
 
-        next_state, q_reward = self._env.get_new_state_and_reward(state, action)
+        next_state, action_reward = self.env.get_new_state_and_reward(state, action)
 
-        reward = q_reward + self.discount_factor() * self.state_value_table_lookup(next_state)
+        reward = action_reward + self.discount_factor() * self._state_values[next_state]
         return reward
-
-    def state_value_table_lookup(self, state):
-        return self._state_values[state]
