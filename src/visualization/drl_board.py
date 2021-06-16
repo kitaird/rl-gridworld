@@ -83,7 +83,7 @@ class DrlBoard(UserList):
         print("Data for row[" + row.__str__() + "] col[" + col.__str__() + "] is " + self[row][col].__str__())
 
     def init_board(self):
-        self.title = "Grid world game!"
+        self.title = "Grid world game - Current Method: " + self.agent.get_agent_name()
         self.cell_size = 90
         self.cell_color = "white"
 
@@ -628,7 +628,7 @@ class DrlBoard(UserList):
         self._last_show_command()
 
     def iterate_action(self):
-        self._agent.run_iteration()
+        self._agent.run_iterations()
         if self._last_show_command is None:
             self._last_show_command = self.show_grid
         self._last_show_command()

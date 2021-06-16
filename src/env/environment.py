@@ -1,3 +1,5 @@
+import numpy as np
+
 from src.env.actions import Actions
 from src.env.state import State
 
@@ -11,8 +13,8 @@ class Environment:
         self._actions_dim = len(Actions)
         self._actions = Actions
         self._agent_state = None
-        self._states = None
-        self.init_states()
+        self._states = self.init_states()
+        self._allowed_actions = self.get_allowed_actions()
 
     @property
     def rows(self):
@@ -38,11 +40,22 @@ class Environment:
     def actions_dim(self):
         return self._actions_dim
 
-    def set_agent_state(self, state):
-        self._agent_state = state
+    @property
+    def allowed_actions(self):
+        return self._allowed_actions
 
+    @property
     def agent_state(self):
         return self._agent_state
+
+    @agent_state.setter
+    def agent_state(self, state):
+        self._agent_state = state
+
+    def get_random_start_state(self):
+        start_fields = list(self.allowed_actions.keys())
+        start_index = np.random.choice(len(start_fields))
+        return start_fields[start_index]
 
     def init_states(self):
         states = {}
@@ -50,10 +63,8 @@ class Environment:
             for row in range(self._rows):
                 val = self._init_data[row][col]
                 state = create_state(row, col, val)
-                if val == 'a':
-                    self._agent_state = state
                 states[(row, col)] = state
-        self._states = states
+        return states
 
     def get_new_state(self, state, action):
         new_state_coords = state.apply(action)
@@ -83,6 +94,26 @@ class Environment:
         outside_rows = state_coords[0] < 0 or state_coords[0] >= self.rows
         outside_cols = state_coords[1] < 0 or state_coords[1] >= self.cols
         return outside_rows or outside_cols
+
+    def get_allowed_actions(self):
+        allowed_actions = {}
+        for state in self.states.values():
+            if not state.is_wall:
+                allowed_actions[state.clone()] = self.get_allowed_actions_for(state)
+        return allowed_actions
+
+    def get_allowed_actions_for(self, state):
+        possible_actions = []
+        for action in self.actions:
+            try:
+                next_state_pos = state.apply(action)
+                next_state = self.states[next_state_pos]
+                is_bound = next_state.is_wall
+            except:
+                is_bound = True
+            if not is_bound:
+                possible_actions.append(action)
+        return possible_actions
 
 
 def create_state(row, col, val):
