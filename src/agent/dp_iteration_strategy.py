@@ -21,6 +21,10 @@ class DpIterationStrategy(IterationStrategy):
         With dynamic programming, there are no episodes to run, as we already have full domain
         knowledge. The start position of the agent (denoted by 's' in the board_layout) may be
         ignored.
+
+        Implementation alternatives:
+            * Policy Iteration
+            * Value Iteration
     """
 
     def discount_factor(self):
@@ -37,7 +41,7 @@ class DpIterationStrategy(IterationStrategy):
         self.policy_improvement()
 
     def policy_evaluation(self):
-        state_values = self.init_state_values()
+        state_values = self.init_zero_state_values()
         change_threshold = 1e-4
         evaluation_done = False
         while not evaluation_done:

@@ -10,7 +10,7 @@ class IterationStrategy(ABC):
 
     def __init__(self, env):
         self._env = env
-        self._state_values = self.init_state_values()
+        self._state_values = self.init_zero_state_values()
         self._policy = self.random_init_policy()
         self._deltas = []
         self._plotter = Plotter(self)
@@ -41,18 +41,24 @@ class IterationStrategy(ABC):
 
     def reset(self):
         print("Reset!")
-        self._state_values = self.init_state_values()
+        self._state_values = self.init_zero_state_values()
         self._policy = self.random_init_policy()
         self._deltas = []
         self._plotter.plot_state_value_deltas()
         self._plotter.pretty_print_to_console()
 
-    def init_state_values(self):
+    def init_zero_state_values(self):
+        return self._init_state_values(lambda: 0.0)
+
+    def init_random_state_values(self):
+        return self._init_state_values(lambda: np.random.random())
+
+    def _init_state_values(self, value_provider):
         init_state_values = {}
         for state in self.env.states.values():
             if not state.is_wall:
                 state_copy = state.clone()
-                init_state_values[state_copy] = 0 if state_copy.is_goal else np.random.random()
+                init_state_values[state_copy] = value_provider()
         return init_state_values
 
     def run_iterations(self):

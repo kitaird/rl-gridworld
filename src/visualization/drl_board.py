@@ -11,7 +11,7 @@ class DrlBoard(UserList):
 
     def __init__(
             self,
-            agent,
+            agents,
             environment):
         """
 
@@ -30,7 +30,8 @@ class DrlBoard(UserList):
         ncols = environment.cols
         self.extend([self._BoardRow(ncols, self) for _ in range(nrows)])
 
-        self._agent = agent
+        self._agent = None
+        self._agents = {a.get_agent_name(): a for a in agents}
         self._nrows = nrows
         self._ncols = ncols
         self._isrunning = False
@@ -77,15 +78,19 @@ class DrlBoard(UserList):
         self._command_stack = []
         self._last_show_command = None
         self.on_mouse_click = self.print_reward_for_cell
-        self.init_board()
+        self.cell_size = 90
+        self.cell_color = "white"
+        self._warning_label = None
+        self.init_board_title()
 
     def print_reward_for_cell(self, btn, row, col):
         print("Data for row[" + row.__str__() + "] col[" + col.__str__() + "] is " + self[row][col].__str__())
 
-    def init_board(self):
-        self.title = "Grid world game - Current Method: " + self.agent.get_agent_name()
-        self.cell_size = 90
-        self.cell_color = "white"
+    def init_board_title(self):
+        if self.agent is None:
+            self.title = "Grid world game"
+        else:
+            self.title = "Grid world game - Current agent: " + self.agent.get_agent_name()
 
     def __getitem__(self, row):             # subscript getter: self[row]
         # Store last accessed row (NOT thread safe... )
@@ -610,37 +615,71 @@ class DrlBoard(UserList):
     def _setup_buttons(self):
         row_frame = Frame(self._root)
         row_frame.pack(side=TOP)
+
+        var = StringVar(row_frame)
+        agent_names = list(self._agents.keys())
+        var.set("Select an agent")
+        drop_down = OptionMenu(row_frame, var, *agent_names, command=self.set_agent)
+        drop_down.pack()
+
         iterate_btn = Button(row_frame, text="Iterate", command=self.iterate_action)
         iterate_btn.pack(side=LEFT)
+
         grid_btn = Button(row_frame, text="Show grid", command=lambda: self.show_wrapper(self.show_grid))
         grid_btn.pack(side=LEFT)
+
         loss_btn = Button(row_frame, text="Show state values", command=lambda: self.show_wrapper(self.show_state_values))
         loss_btn.pack(side=LEFT)
+
         gradient_btn = Button(row_frame, text="Show policy", command=lambda: self.show_wrapper(self.show_policy))
         gradient_btn.pack(side=LEFT)
+
         reset_btn = Button(row_frame, text="Reset", command=self.reset_action)
         reset_btn.pack(side=LEFT)
 
+    def set_agent(self, selected_agent_name):
+        self._agent = self._agents[selected_agent_name]
+        self.init_board_title()
+        if self._warning_label is not None:
+            self._warning_label.destroy()
+            self._warning_label = None
+
     def reset_action(self):
-        self._agent.reset()
-        if self._last_show_command is None:
-            self._last_show_command = self.show_grid
-        self._last_show_command()
+        if self.agent is not None:
+            self._agent.reset()
+            if self._last_show_command is None:
+                self._last_show_command = self.show_grid
+            self._last_show_command()
+        else:
+            self.show_alert_agent_is_none()
 
     def iterate_action(self):
-        self._agent.run_iterations()
-        if self._last_show_command is None:
-            self._last_show_command = self.show_grid
-        self._last_show_command()
+        if self.agent is not None:
+            self._agent.run_iterations()
+            if self._last_show_command is None:
+                self._last_show_command = self.show_grid
+            self._last_show_command()
+        else:
+            self.show_alert_agent_is_none()
 
     def show_wrapper(self, show_command):
-        self._last_show_command = show_command
-        self.show_grid()
-        show_command()
+        if self.agent is not None:
+            self._last_show_command = show_command
+            self.show_grid()
+            show_command()
+        else:
+            self.show_alert_agent_is_none()
+
+    def show_alert_agent_is_none(self):
+        var = StringVar()
+        var.set("Agent not yet selected! Select an Agent first!")
+        if self._warning_label is None:
+            self._warning_label = Label(self._root, fg='red', textvariable=var)
+            self._warning_label.pack()
 
     def show_state_values(self):
         for state, state_value in self._agent.state_values.items():
-            if state_value:
+            if state_value is not None:
                 self.fill_field(state.row, state.col, "{:1.3f}".format(state_value))
 
     def show_policy(self):
