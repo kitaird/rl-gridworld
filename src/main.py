@@ -15,8 +15,8 @@ env = Environment(init_data)
 dp_agent = DpIterationStrategy(env)
 mc_agent = McIterationStrategy(env)
 td_agent = TdIterationStrategy(env)
-
-board = DrlBoard(dp_agent, env)
+agents = [dp_agent, mc_agent, td_agent]
+board = DrlBoard(agents, env)
 board.show()
 
 # move = -1 reward
