@@ -4,14 +4,14 @@ from src.agent.td_iteration_strategy import TdIterationStrategy
 from src.env.environment import Environment
 from src.visualization.drl_board import DrlBoard
 
-init_data = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 1, 0, 1, 1, 1, 0, 0],
-             [0, 0, 1, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 1, 0, 0, 0, 1, 1, 1],
-             [0, 0, 0, 0, 0, 0, 0, 0, 'g']]
+grid_world_layout = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 1, 0, 1, 1, 1, 0, 0],
+                     [0, 0, 1, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 0, 1, 0, 0, 0, 1, 1, 1],
+                     [0, 0, 0, 0, 0, 0, 0, 0, 'g']]
 
-env = Environment(init_data)
+env = Environment(grid_world_layout)
 dp_agent = DpIterationStrategy(env)
 mc_agent = McIterationStrategy(env)
 td_agent = TdIterationStrategy(env)
