@@ -1,15 +1,15 @@
-from src.agent.dp_iteration_strategy import DpIterationStrategy
-from src.agent.mc_iteration_strategy import McIterationStrategy
-from src.agent.td_iteration_strategy import TdIterationStrategy
+from src.agent.solutions.dp_iteration_strategy import DpIterationStrategy
+from src.agent.solutions.mc_iteration_strategy import McIterationStrategy
+from src.agent.solutions.td_iteration_strategy import TdIterationStrategy
 from src.env.environment import Environment
 from src.visualization.drl_board import DrlBoard
 
-grid_world_layout = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 1, 0, 1, 1, 1, 0, 0],
-                     [0, 0, 1, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                     [0, 0, 1, 0, 0, 0, 1, 1, 1],
-                     [0, 0, 0, 0, 0, 0, 0, 0, 'g']]
+grid_world_layout = [['a', 0, 0, 0, 0, 0, 0, 0, 0],
+                     [0, 1, 1, 0, 1, 0, 1, 1, 0],
+                     [0, 0, 1, 0, 0, 0, 1, 0, 0],
+                     [0, 1, 1, 1, 1, 0, 1, 0, 0],
+                     [0, 0, 0, 1, 0, 0, 1, 0, 1],
+                     [0, 1, 1, 0, 0, 1, 0, 0, 'g']]
 
 env = Environment(grid_world_layout)
 dp_agent = DpIterationStrategy(env)
@@ -18,9 +18,3 @@ td_agent = TdIterationStrategy(env)
 agents = [dp_agent, mc_agent, td_agent]
 board = DrlBoard(agents, env)
 board.show()
-
-# move = -1 reward
-# move into wall -1 (stays in same spot)
-# move out of grid -1 (stays in same spot)
-# move into goal 0
-# move into goal -> no more jumping
