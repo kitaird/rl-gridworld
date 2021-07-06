@@ -41,10 +41,40 @@ class DpIterationStrategy(IterationStrategy):
         self.policy_improvement()
 
     def policy_evaluation(self):
-        pass
+        state_values = self.init_zero_state_values()
+        change_threshold = 1e-4
+        evaluation_done = False
+        while not evaluation_done:
+            biggest_change = 0
+            for state in self.env.states.values():
+                if not state.is_wall:
+                    old_state_value = state_values[state]
+                    new_state_value = self.state_value(state)
+                    state_values[state] = new_state_value
+                    biggest_change = max(biggest_change, np.abs(old_state_value - new_state_value))
+            self._state_values = state_values
+            self._deltas.append(biggest_change)
+            if biggest_change > change_threshold:
+                evaluation_done = True
 
     def policy_improvement(self):
-        pass
+        while True:
+            policy_converged = True
+            for state in self._state_values.keys():
+                if state in self._policy:
+                    old_action = self._policy[state]
+                    new_action = None
+                    best_value = float('-inf')
+                    for action in self.env.actions:
+                        state_value = self.action_value(state, action)
+                        if state_value > best_value:
+                            best_value = state_value
+                            new_action = action
+                    self._policy[state] = new_action
+                    if new_action != old_action:
+                        policy_converged = False
+            if policy_converged:
+                break
 
     def state_value(self, state):
         if state.is_goal:
