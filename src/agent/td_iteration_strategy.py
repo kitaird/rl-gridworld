@@ -29,5 +29,5 @@ class TdIterationStrategy(IterationStrategy):
     def new_state_value(self, state, next_state, reward):
         pass
 
-    def play_game(self):
+    def generate_trajectory(self):
         pass

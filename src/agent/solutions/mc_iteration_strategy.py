@@ -40,9 +40,17 @@ class McIterationStrategy(IterationStrategy):
             returns[state] = 0 if state.is_goal else []
         return returns
 
+    def random_init_policy_only_allowed_states(self):
+        random_init_policy = {}
+        for state in self.env.states.values():
+            if not state.is_wall:
+                possible_actions = self.env.allowed_actions[state]
+                random_init_policy[state.clone()] = np.random.choice(possible_actions)
+        return random_init_policy
+
     def run_iteration_impl(self):
         biggest_change = 0
-        states_and_returns = self.play_game()
+        states_and_returns = self.generate_trajectory()
         seen_states = set()
         for s, G in states_and_returns:
             if s not in seen_states:
@@ -55,7 +63,7 @@ class McIterationStrategy(IterationStrategy):
         for state in self._policy.keys():
             self._policy[state] = self.get_action_for_state(state)
 
-    def play_game(self):
+    def generate_trajectory(self):
         self.env.agent_state = self.env.get_random_start_state()
 
         states_and_rewards = [(self.env.agent_state, 0)]
@@ -77,11 +85,3 @@ class McIterationStrategy(IterationStrategy):
             episode_return = reward + self.discount_factor() * episode_return
         states_and_returns.reverse()
         return states_and_returns
-
-    def random_init_policy_only_allowed_states(self):
-        random_init_policy = {}
-        for state in self.env.states.values():
-            if not state.is_wall:
-                possible_actions = self.env.allowed_actions[state]
-                random_init_policy[state.clone()] = np.random.choice(possible_actions)
-        return random_init_policy

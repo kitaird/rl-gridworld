@@ -35,13 +35,10 @@ class McIterationStrategy(IterationStrategy):
         return "Monte Carlo method"
 
     def init_returns(self):
-        pass
-
-    def run_iteration_impl(self):
-        pass
-
-    def play_game(self):
-        pass
+        returns = {}
+        for state in self._state_values.keys():
+            returns[state] = 0 if state.is_goal else []
+        return returns
 
     def random_init_policy_only_allowed_states(self):
         random_init_policy = {}
@@ -50,3 +47,9 @@ class McIterationStrategy(IterationStrategy):
                 possible_actions = self.env.allowed_actions[state]
                 random_init_policy[state.clone()] = np.random.choice(possible_actions)
         return random_init_policy
+
+    def run_iteration_impl(self):
+        pass
+
+    def generate_trajectory(self):
+        pass
