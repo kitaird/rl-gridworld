@@ -26,6 +26,10 @@ It can be configured the following way:
 * Multiple goals are possible!
 * The dimension of the grid are adjustable! One can try out multiple sizes and test each algorithm with it!
 
+##Solutions for algorithms
+The solution for the algorithms is in the directory agents/solutions. These are currently used in the main.py in order to see that the example is working.
+When assigning the task to the students, the solutions directory should be removed and the regular algorithms (dp_iteration_strategy.py, mc_iteration_strategy.py, td_iteration_strategy.py) referenced in the main.py.
+
 #Installing and running the programm
 All required packages are in resources/requirements.txt.
 To install the requirements, execute 'pip install -r resource/requirements.txt'
