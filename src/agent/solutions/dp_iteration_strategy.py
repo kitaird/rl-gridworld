@@ -41,20 +41,21 @@ class DpIterationStrategy(IterationStrategy):
         self.policy_improvement()
 
     def policy_evaluation(self):
-        state_values = self.init_zero_state_values()
-        change_threshold = 1e-4
+        change_threshold = 1e-1
         evaluation_done = False
         while not evaluation_done:
+            old_state_values = self.clone_state_values()
+            new_state_values = self.init_zero_state_values()
             biggest_change = 0
             for state in self.env.states.values():
                 if not state.is_wall:
-                    old_state_value = state_values[state]
+                    old_state_value = old_state_values[state]
                     new_state_value = self.state_value(state)
-                    state_values[state] = new_state_value
+                    new_state_values[state] = new_state_value
                     biggest_change = max(biggest_change, np.abs(old_state_value - new_state_value))
-            self._state_values = state_values
+            self._state_values = new_state_values
             self._deltas.append(biggest_change)
-            if biggest_change > change_threshold:
+            if biggest_change < change_threshold:
                 evaluation_done = True
 
     def policy_improvement(self):
@@ -66,9 +67,9 @@ class DpIterationStrategy(IterationStrategy):
                     new_action = None
                     best_value = float('-inf')
                     for action in self.env.actions:
-                        state_value = self.action_value(state, action)
-                        if state_value > best_value:
-                            best_value = state_value
+                        action_value = self.action_value(state, action)
+                        if action_value > best_value:
+                            best_value = action_value
                             new_action = action
                     self._policy[state] = new_action
                     if new_action != old_action:
@@ -77,30 +78,18 @@ class DpIterationStrategy(IterationStrategy):
                 break
 
     def state_value(self, state):
-        if state.is_goal:
-            return 0
+        state_value = 0
 
-        if state.is_wall:
-            raise ValueError("Error should not be wall!")
+        next_state, reward = self.env.get_new_state_and_reward(state, self.policy[state])
+        next_state_val = self.discount_factor() * self._state_values[next_state]
+        state_value = reward + next_state_val
 
-        probability_for_move = 1 / self.env.actions_dim
-        cumulative_reward = 0
-
-        for action in self.env.actions:
-            next_state, reward = self.env.get_new_state_and_reward(state, action)
-            next_state_val = self.discount_factor() * self._state_values[next_state]
-            cumulative_reward += probability_for_move * (reward + next_state_val)
-
-        return cumulative_reward
+        return state_value
 
     def action_value(self, state, action):
-        if state.is_goal:
-            return 0
-
-        if state.is_wall:
-            raise ValueError("Error should not be wall!")
+        action_value = 0
 
         next_state, action_reward = self.env.get_new_state_and_reward(state, action)
+        action_value = action_reward + self.discount_factor() * self._state_values[next_state]
 
-        reward = action_reward + self.discount_factor() * self._state_values[next_state]
-        return reward
+        return action_value

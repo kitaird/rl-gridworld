@@ -47,30 +47,16 @@ class DpIterationStrategy(IterationStrategy):
         pass
 
     def state_value(self, state):
-        if state.is_goal:
-            return 0
+        state_value = 0
 
-        if state.is_wall:
-            raise ValueError("Error should not be wall!")
+        """Implement state value computation here, 
+        use current policy to find action for state and resolve next state s'"""
 
-        probability_for_move = 1 / self.env.actions_dim
-        cumulative_reward = 0
-
-        for action in self.env.actions:
-            next_state, reward = self.env.get_new_state_and_reward(state, action)
-            next_state_val = self.discount_factor() * self._state_values[next_state]
-            cumulative_reward += probability_for_move * (reward + next_state_val)
-
-        return cumulative_reward
+        return state_value
 
     def action_value(self, state, action):
-        if state.is_goal:
-            return 0
+        action_value = 0
 
-        if state.is_wall:
-            raise ValueError("Error should not be wall!")
+        """Implement action value computation here using self.env.get_new_state_and_reward"""
 
-        next_state, action_reward = self.env.get_new_state_and_reward(state, action)
-
-        reward = action_reward + self.discount_factor() * self._state_values[next_state]
-        return reward
+        return action_value

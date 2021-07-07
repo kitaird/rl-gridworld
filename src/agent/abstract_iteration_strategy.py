@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
+import copy
 
 from src.env.actions import Actions
 from src.visualization.plotter import Plotter
@@ -60,6 +61,12 @@ class IterationStrategy(ABC):
                 state_copy = state.clone()
                 init_state_values[state_copy] = value_provider()
         return init_state_values
+
+    def clone_state_values(self):
+        cloned_state_values = {}
+        for state, value in self._state_values.items():
+            cloned_state_values[state.clone()] = copy.copy(value)
+        return cloned_state_values
 
     def run_iterations(self):
         for _ in range(self.get_iteration_size()):

@@ -86,8 +86,6 @@ class Environment:
 
         reward_any_step = -1
 
-        if new_state.is_goal:
-            return new_state, 0
         return new_state, reward_any_step
 
     def is_outside_bounds(self, state_coords):
