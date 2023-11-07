@@ -9,7 +9,7 @@ class Plotter:
         self._env = gym_environment
 
     def pretty_print_to_console(self):
-        print("New rewards!")
+        print("New state-values!")
         values_to_print = [[self.get_printable_state(r, c) for c in range(self._env.gridworld.cols)] for r in
                            range(self._env.gridworld.rows)]
         print(tabulate(values_to_print, floatfmt=".3f"))

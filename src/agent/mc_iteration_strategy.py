@@ -26,6 +26,10 @@ class McIterationStrategy(IterationStrategy):
             # don't need an array for that state
         return returns
 
+    def reset(self):
+        super().reset()
+        self._returns = self.init_returns()
+
     def random_init_policy(self) -> {}:
         random_init_policy = {}
         for state in self.env.states:
