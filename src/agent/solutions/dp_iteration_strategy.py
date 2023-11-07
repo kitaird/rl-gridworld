@@ -6,18 +6,7 @@ from src.agent.abstract_iteration_strategy import IterationStrategy
 class DpIterationStrategy(IterationStrategy):
     """
         This is the dynamic programming strategy
-        Available domain knowledge are the following:
-
-            * Reward per step = -1
-            * Reward for step into wall = -1
-            * Reward for step outside boundaries = -1
-            * Reward for step into goal = 0
-
-            * A step moves the agent into a new field
-            * If the new field is a wall or outside a boundary,
-              the agent remains in the same field but still gets a respective reward
-
-            * Game over when step into goal
+        Domain knowledge is available (planning).
 
         With dynamic programming, there are no episodes to run, as we already have full domain
         knowledge.
@@ -28,8 +17,9 @@ class DpIterationStrategy(IterationStrategy):
     """
     def __init__(self, env):
         super().__init__("DYNAMIC PROGRAMMING", env)
-        self._policy_evaluation_threshold = self._config.getfloat(self._agent_name, 'policy_evaluation_threshold')  # This threshold makes sure that the policy evaluation ends after the improvements are too insignificant
         self._last_state_values = self._env.init_zero_state_values()
+        self._policy_evaluation_threshold = self._config.getfloat(self._agent_name, 'policy_evaluation_threshold')
+        # This threshold makes sure that the policy evaluation ends after the improvements are too insignificant
 
     def run_iteration_impl(self) -> None:
         self.policy_evaluation()
@@ -38,22 +28,25 @@ class DpIterationStrategy(IterationStrategy):
     def policy_evaluation(self) -> None:
         evaluation_done = False
         while not evaluation_done:
-            evaluation_done = self.evaluate()
+            evaluation_done = self.evaluate_policy()
 
     def policy_improvement(self) -> None:
-        while True:
+        policy_converged = False
+        while not policy_converged:
             policy_converged = self.improve_policy()
-            if policy_converged:
-                break
 
     """
-        This method should evaluate the current state_values and compare them to the newest state_values.
-        Therefore, use the self.state_value() method to compute the new state_values for each state.
+        This method should evaluate the current policy using bootstrapping.
         Compare each new state_value to the current state_value.
         Store this (absolute) difference in the greatest_delta variable for each state, in order to log/plot the biggest delta
-        in one evaluation iteration. Append the greatest_delta for an itaration to self._env.deltas array.
+        in one evaluation iteration. Append the greatest_delta for an itaration to self._env.deltas array:
+        
+        self.env.deltas.append(greatest_delta)
+        
+        Use self._policy_evaluation_threshold as a stopping condition when the greatest_delta becomes too small.
+        
     """
-    def evaluate(self) -> bool:
+    def evaluate_policy(self) -> bool:
         greatest_delta = 0
         self._last_state_values = self.clone_state_values()
         new_state_values = self.env.init_zero_state_values()
@@ -89,15 +82,7 @@ class DpIterationStrategy(IterationStrategy):
         return policy_converged
 
     """
-        The state_value of the provided_state (p_s) (given the agent's policy) is depending on
-        the action considered most beneficial by the policy for p_s, in combination with 
-        the state_value of the p_s.
-        
-        Use the self.env.simulate_step() to "simulate/plan" a step and see what reward
-        that would return and in which next_state the agent would land.
-         
-        Use this next_state and reward in combination with the discounted state_value of
-        p_s to get its state_value (given the agent's policy).  
+        Calculate the state_value of the given state using planning.
     """
     def state_value(self, state) -> float:
         next_state, reward = self.env.simulate_step(state, self.policy[state])
@@ -105,10 +90,7 @@ class DpIterationStrategy(IterationStrategy):
         return reward + next_state_val
 
     """
-        The action_value of the provided_state (p_s) and provided_action (p_a) (given the agent's policy)
-        is depending on state_value of the next_state. Next_state is the state the agent
-        would land in, when executing p_a in p_s. Use the discounted state_value of next_state
-        in addition with the immediate reward of executing p_a in p_s to calculate the action_value.
+        Calculate the action_value of the given state-action-pair using planning.
     """
     def action_value(self, state, action) -> float:
         next_state, action_reward = self.env.simulate_step(state, action)

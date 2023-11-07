@@ -7,7 +7,7 @@ class TdIterationStrategy(IterationStrategy):
     """
         This is the Temporal Difference learning strategy
         There is no domain knowledge available
-        The state value map should be updated during episode run
+        The state value map should be updated during episode run (online)
 
         Watch out for infinite loops! Use the episode_threshold to avoid running into
         an infinite loop in the grid world! (e.g. |right|left| -> infinite loop)
@@ -21,12 +21,15 @@ class TdIterationStrategy(IterationStrategy):
     """
         Use the generate_trajectory method to generate states_and_rewards.
         Iterate through all steps of the trajectory and extract the triple (state, next_state, reward).
-        Update the self.env.state_values using the newly computed TD-Error.
+        Update the self._env.state_values using the newly computed TD-Error.
         Compare the difference between the current state_value and the new state_value for each state and
         log it in greatest_delta to allow plotting.
         Update the policy by computing the greedy action for each state using the already existing method
         self.get_greedy_action_for_state(state).
-        At the end of the method, append greatest_delta to self._env.deltas.
+        At the end of the method, append greatest_delta to self._env.deltas:
+        
+        self._env.deltas.append(greatest_delta)
+        
     """
     def run_iteration_impl(self) -> None:
         states_and_rewards = self.generate_trajectory()
@@ -46,14 +49,13 @@ class TdIterationStrategy(IterationStrategy):
         return self._env.state_values[state] + self._step_size * self.td_error(state, next_state, reward)
 
     """
-        Calculate the TD-Error using the current state_value, the step_size parameter, the current state_value as well
-        as the discounted future state_value.
+        Calculate the TD-Error.
     """
     def td_error(self, state, next_state, reward) -> float:
         return self.td_target(next_state, reward) - self._env.state_values[state]
 
     """
-        Calculate the TD-Target using the future state_value, the dicsount value and the immediate reward.
+        Calculate the TD-Target.
     """
     def td_target(self, next_state, reward) -> float:
         return reward + self.discount_factor * self._env.state_values[next_state]
@@ -62,7 +64,8 @@ class TdIterationStrategy(IterationStrategy):
         Generate a trajectory and use the self.env.get_random_start_state() to set the beginning state in 
         self.env.agent_state.
 
-        Follow the agent's policy until the goal or the timeout (a fixed iterator of your choice) is reached.
+        Follow the agent's policy until the goal or the timeout (a fixed iterator of your choice, 
+        self._episode_threshold) is reached.
 
         This method returns a list of tuples [(state, reward), (state', reward')]
     """

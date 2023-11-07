@@ -7,12 +7,16 @@ class TdIterationStrategy(IterationStrategy):
     """
         This is the Temporal Difference learning strategy
         There is no domain knowledge available
-        The state value map should be updated during episode run
+        The state value map should be updated during episode run (online)
+
+        Watch out for infinite loops! Use the episode_threshold to avoid running into
+        an infinite loop in the grid world! (e.g. |right|left| -> infinite loop)
     """
 
     def __init__(self, env):
         super().__init__("TEMPORAL DIFFERENCE", env)
         self._step_size = self._config.getfloat(self._agent_name, 'step_size')
+        self._episode_threshold = self._config.getint(self._agent_name, 'episode_threshold')
 
     """
         Use the generate_trajectory method to generate states_and_rewards.
@@ -22,7 +26,10 @@ class TdIterationStrategy(IterationStrategy):
         log it in greatest_delta to allow plotting.
         Update the policy by computing the greedy action for each state using the already existing method
         self.get_greedy_action_for_state(state).
-        At the end of the method, append greatest_delta to self._env.deltas.
+        At the end of the method, append greatest_delta to self._env.deltas:
+        
+        self._env.deltas.append(greatest_delta)
+        
     """
     def run_iteration_impl(self) -> None:
         states_and_rewards = self.generate_trajectory()
@@ -30,29 +37,35 @@ class TdIterationStrategy(IterationStrategy):
         pass
 
     """
-        Calculate the TD-Error using the current state_value, the step_size parameter, the current state_value as well
-        as the discounted future state_value.
+        Calculate the TD-Error.
     """
     def td_error(self, state, next_state, reward) -> float:
-
         """
-        Impl here
-
-        :param state: current agent's state
-        :param next_state: the state, where the agent ends up to be
-        :param reward: the reward the agent got when transitioning from state to next_state
-        :return: the calculated td-error considering the step-size and the current state values
+            Impl here.
         """
+        return 0
 
+    """
+        Calculate the TD-Target.
+    """
+    def td_target(self, next_state, reward) -> float:
+        """
+            Impl here.
+        """
         return 0
 
     """
         Generate a trajectory and use the self.env.get_random_start_state() to set the beginning state in 
         self.env.agent_state.
         
-        Follow the agent's policy until the goal or the timeout (a fixed iterator of your choice) is reached.
+        Follow the agent's policy until the goal or the timeout (a fixed iterator of your choice, 
+        self._episode_threshold) is reached.
         
-        This method returns a list of tuples [(state, reward), (state', reward')]
+        This method returns a list of tuples 
+            [
+                (state, reward), 
+                (state', reward')
+            ]
     """
     def generate_trajectory(self) -> []:
 
