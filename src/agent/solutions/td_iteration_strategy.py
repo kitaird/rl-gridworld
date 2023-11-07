@@ -9,13 +9,14 @@ class TdIterationStrategy(IterationStrategy):
         There is no domain knowledge available
         The state value map should be updated during episode run
 
-        Watch out for infinite loops! Set a timeout (e.g. 100-200 steps per episode) to avoid running into an infinite
-        loop in the grid world! (e.g. |right|left| -> infinite loop)
+        Watch out for infinite loops! Use the episode_threshold to avoid running into
+        an infinite loop in the grid world! (e.g. |right|left| -> infinite loop)
     """
 
     def __init__(self, env):
-        super().__init__("Temporal difference learning", env)
-        self._step_size = 0.1
+        super().__init__("TEMPORAL DIFFERENCE", env)
+        self._step_size = self._config.getfloat(self._agent_name, 'step_size')
+        self._episode_threshold = self._config.getint(self._agent_name, 'episode_threshold')
 
     """
         Use the generate_trajectory method to generate states_and_rewards.
@@ -70,7 +71,7 @@ class TdIterationStrategy(IterationStrategy):
 
         states_and_rewards = [(self.env.agent_state, 0)]
         iterator = 0
-        while not self.env.agent_state.is_goal and iterator < 200:
+        while not self.env.agent_state.is_goal and iterator < self._episode_threshold:
             state = self.env.agent_state
             action = self._policy[state]
             new_state, reward = self.env.step(state, action)

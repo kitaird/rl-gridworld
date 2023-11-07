@@ -27,9 +27,10 @@ class DpIterationStrategy(IterationStrategy):
     """
 
     def __init__(self, env):
-        super().__init__("Dynamic Programming", env)
-        self._policy_evaluation_threshold = 1e-3  # This threshold makes sure that the policy evaluation ends after the improvements are too insignificant
+        super().__init__("DYNAMIC PROGRAMMING", env)
         self._last_state_values = self._env.init_zero_state_values()
+        self._policy_evaluation_threshold = self._config.getfloat(self._agent_name, 'policy_evaluation_threshold')
+        # This threshold makes sure that the policy evaluation ends after the improvements are too insignificant
 
     def run_iteration_impl(self) -> None:
         self.policy_evaluation()

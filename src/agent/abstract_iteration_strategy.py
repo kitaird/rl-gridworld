@@ -2,16 +2,19 @@ import copy
 from abc import ABC, abstractmethod
 
 import numpy as np
+import configparser
 
 
 class IterationStrategy(ABC):
 
     def __init__(self, agent_name, env):
+        self._config = configparser.ConfigParser()
+        self._config.read('resources/config.ini')
         self._agent_name = agent_name
         self._env = env
         self._policy = self._random_init_policy()
-        self._get_iteration_size = 10
-        self._discount_factor = 0.9
+        self._get_iteration_size = self._config.getint(self._agent_name, 'iterations')
+        self._discount_factor = self._config.getfloat(self._agent_name, 'discount_factor')
 
     def run_iterations(self):
         for _ in range(self._get_iteration_size):

@@ -16,13 +16,14 @@ class McIterationStrategy(IterationStrategy):
               reach every state, summing up the rewards after each episode. Then, update the policy after each episode
               (not after each step!)
 
-        Watch out for infinite loops! Set a timeout (e.g. 100-200 steps per episode) to avoid running into an infinite
-        loop in the grid world! (e.g. |right|left| -> infinite loop)
+        Watch out for infinite loops! Use the episode_threshold to avoid running into
+        an infinite loop in the grid world! (e.g. |right|left| -> infinite loop)
     """
     def __init__(self, env):
-        super().__init__("Monte Carlo method", env)
+        super().__init__("MONTE CARLO", env)
         self._returns = self.init_returns()
         self._policy = self.random_init_policy()
+        self._episode_threshold = self._config.getint(self._agent_name, 'episode_threshold')
 
     def init_returns(self) -> {}:
         returns = {}
@@ -77,7 +78,7 @@ class McIterationStrategy(IterationStrategy):
 
         states_and_rewards = [(self.env.agent_state, 0)]
         iterator = 0
-        while not self.env.agent_state.is_goal and iterator < 200:
+        while not self.env.agent_state.is_goal and iterator < self._episode_threshold:
             action = self._policy[self.env.agent_state]
             next_state, reward = self.env.step(self.env.agent_state, action)
             states_and_rewards.append((next_state, reward))
