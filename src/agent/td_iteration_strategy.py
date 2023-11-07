@@ -11,8 +11,8 @@ class TdIterationStrategy(IterationStrategy):
     """
 
     def __init__(self, env):
-        super().__init__("Temporal difference learning", env)
-        self._step_size = 0.1
+        super().__init__("TEMPORAL DIFFERENCE", env)
+        self._step_size = self._config.getfloat(self._agent_name, 'step_size')
 
     """
         Use the generate_trajectory method to generate states_and_rewards.

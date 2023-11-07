@@ -16,10 +16,16 @@ class Gym:
     def get_random_start_state(self):
         return np.random.choice(self.states)
 
+    def step(self, state, action) -> (State, float):
+        new_state, reward = self.simulate_step(state, action)
+        self.agent_state = new_state
+        return new_state, reward
+
     """
+        ENVIRONMENT KNOWLEDGE METHOD
         This method only simulates a step and doesn't update the agent's position.
-        That has to be done manually afterwards. The reason for this is to be able to use this method 
-        for planning only.
+        That has to be done manually afterwards. 
+        The reason for this is to be able to use this method for planning only.
     """
     def simulate_step(self, state, action) -> (State, float):
         if state.is_goal:
@@ -32,19 +38,6 @@ class Gym:
 
         reward_per_step = -1
 
-        return new_state, reward_per_step
-
-    def step(self, state, action) -> (State, float):
-        if state.is_goal:
-            return state, 0
-
-        if state.is_wall:
-            raise ValueError("AgentState can't be wall!")
-
-        new_state = self._gridworld.get_new_state(state, action)
-
-        reward_per_step = -1
-        self.agent_state = new_state
         return new_state, reward_per_step
 
     def reset(self):
@@ -64,7 +57,7 @@ class Gym:
         return init_state_values
 
     """
-    This method returns only 'states', that means it doesn't return walls.
+    This method returns only valid 'states', that means it doesn't return walls.
     """
     @property
     def states(self):

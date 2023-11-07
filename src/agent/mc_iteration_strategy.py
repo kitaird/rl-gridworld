@@ -21,7 +21,7 @@ class McIterationStrategy(IterationStrategy):
     """
 
     def __init__(self, env):
-        super().__init__("Monte Carlo method", env)
+        super().__init__("MONTE CARLO", env)
         self._returns = self.init_returns()
         self._policy = self.random_init_policy()
 
