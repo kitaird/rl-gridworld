@@ -31,7 +31,7 @@ class DrlBoard(UserList):
         self.extend([self._BoardRow(ncols, self) for _ in range(nrows)])
 
         self._agent = None
-        self._agents = {a.get_agent_name(): a for a in agents}
+        self._agents = {a.agent_name: a for a in agents}
         self._nrows = nrows
         self._ncols = ncols
         self._isrunning = False
@@ -90,7 +90,7 @@ class DrlBoard(UserList):
         if self.agent is None:
             self.title = "Grid world game"
         else:
-            self.title = "Grid world game - Current agent: " + self.agent.get_agent_name()
+            self.title = "Grid world game - Current agent: " + self.agent.agent_name
 
     def __getitem__(self, row):             # subscript getter: self[row]
         # Store last accessed row (NOT thread safe... )
