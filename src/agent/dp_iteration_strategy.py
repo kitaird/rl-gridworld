@@ -5,18 +5,7 @@ from src.agent.abstract_iteration_strategy import IterationStrategy
 class DpIterationStrategy(IterationStrategy):
     """
         This is the dynamic programming strategy
-        Available domain knowledge are the following:
-
-            * Reward per step = -1
-            * Reward for step into wall = -1
-            * Reward for step outside boundaries = -1
-            * Reward for step into goal = 0
-
-            * A step moves the agent into a new field
-            * If the new field is a wall or outside a boundary,
-              the agent remains in the same field but still gets a respective reward
-
-            * Game over when step into goal
+        Domain knowledge is available (planning).
 
         With dynamic programming, there are no episodes to run, as we already have full domain
         knowledge.
@@ -39,22 +28,24 @@ class DpIterationStrategy(IterationStrategy):
     def policy_evaluation(self) -> None:
         evaluation_done = False
         while not evaluation_done:
-            evaluation_done = self.evaluate()
+            evaluation_done = self.evaluate_policy()
 
     def policy_improvement(self) -> None:
-        while True:
+        policy_converged = False
+        while not policy_converged:
             policy_converged = self.improve_policy()
-            if policy_converged:
-                break
 
     """
-        This method should evaluate the current state_values and compare them to the newest state_values.
-        Therefore, use the self.state_value() method to compute the new state_values for each state.
+        This method should evaluate the current policy using bootstrapping.
         Compare each new state_value to the current state_value.
         Store this (absolute) difference in the greatest_delta variable for each state, in order to log/plot the biggest delta
-        in one evaluation iteration. Append the greatest_delta for an itaration to self._env.deltas array.
+        in one evaluation iteration. Append the greatest_delta for an itaration to self._env.deltas array:
+        
+        self.env.deltas.append(greatest_delta)
+        
+        Use self._policy_evaluation_threshold as a stopping condition when the greatest_delta becomes too small.
     """
-    def evaluate(self) -> bool:
+    def evaluate_policy(self) -> bool:
         greatest_delta = 0
         """
             Impl here.
@@ -75,37 +66,21 @@ class DpIterationStrategy(IterationStrategy):
         return policy_converged
 
     """
-        The state_value of the provided_state (p_s) (given the agent's policy) is depending on
-        the action considered most beneficial by the policy for p_s, in combination with 
-        the state_value of the p_s.
-
-        Use the self.env.simulate_step() to "simulate/plan" a step and see what reward
-        that would return and in which next_state the agent would land.
-
-        Use this next_state and reward in combination with the discounted state_value of
-        p_s to get its state_value (given the agent's policy).  
+        Calculate the state_value of the given state using planning.
     """
     def state_value(self, state) -> float:
         state_value = 0
-
         """
-            Implement state value computation here, 
-            use current policy to find action for state and resolve next state s'
+            Impl here.
         """
-
         return state_value
 
     """
-        The action_value of the provided_state (p_s) and provided_action (p_a) (given the agent's policy)
-        is depending on state_value of the next_state. Next_state is the state the agent
-        would land in, when executing p_a in p_s. Use the discounted state_value of next_state
-        in addition with the immediate reward of executing p_a in p_s to calculate the action_value.
+        Calculate the action_value of the given state-action-pair using planning.
     """
     def action_value(self, state, action) -> float:
         action_value = 0
-
         """
-            Implement action value computation here using self.env.get_new_state_and_reward
+            Impl here.
         """
-
         return action_value
