@@ -29,6 +29,9 @@ class State:
     def clone(self):
         return State(self._row, self._col, self._is_goal, self._is_wall)
 
+    def __repr__(self):
+        return self.__str__()
+
     def __str__(self):
         msg = "{"
         position = "row: " + self._row.__str__() + " , col: " + self._col.__str__()
@@ -41,4 +44,4 @@ class State:
         return (self._row, self._col) == (other.row, other.col)
 
     def __ne__(self, other):
-        return not (self == other)
+        return self != other

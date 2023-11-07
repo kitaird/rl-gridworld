@@ -1,7 +1,8 @@
 from src.agent.solutions.dp_iteration_strategy import DpIterationStrategy
 from src.agent.solutions.mc_iteration_strategy import McIterationStrategy
 from src.agent.solutions.td_iteration_strategy import TdIterationStrategy
-from src.env.environment import Environment
+from src.env.gridworld import Gridworld
+from src.env.gym import Gym
 from src.visualization.drl_board import DrlBoard
 
 grid_world_layout = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -11,7 +12,8 @@ grid_world_layout = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 1, 0, 0, 1, 0, 1],
                      [0, 1, 1, 0, 0, 1, 0, 0, 'g']]
 
-env = Environment(grid_world_layout)
+gridworld = Gridworld(grid_world_layout)
+env = Gym(gridworld)
 dp_agent = DpIterationStrategy(env)
 mc_agent = McIterationStrategy(env)
 td_agent = TdIterationStrategy(env)
