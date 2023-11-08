@@ -1,0 +1,4 @@
+game2dboard==0.9.1
+matplotlib==3.7.1
+numpy>=1.21.4
+tabulate==0.9.0
