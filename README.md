@@ -69,7 +69,7 @@ Here are some examples of the project with implemented algorithms:
 
 ## References
 The rl_board.py is based on the source code ot the python package `game2dboard` which uses the provided [game2dboard-MIT-Licence](https://github.com/kitaird/rl-gridworld/blob/develop/resources/game2dboard-LICENSE.txt) under `resources/game2dboard-LICENSE.txt`.
-The initial `board.py` from `mjbrusso/game2dboard` was extended to contain additional buttons and logic for the purpose of this project.
+The initial `board.py` from [mjbrusso/game2dboard](https://github.com/mjbrusso/game2dboard) was extended to contain additional buttons and logic for the purpose of this project.
 
 ## License
 This project is licensed under the MIT License - see the [MIT-Licence](https://github.com/kitaird/rl-gridworld/blob/develop/LICENSE.txt) file for details.
