@@ -68,11 +68,11 @@ Here are some examples of the project with implemented algorithms:
 ![Local Image](example-images/Optimal_Policy_DP.png)
 
 ## References
-The drl_board.py is based on the source code ot the python package `game2dboard` which uses the provided [game2dboard-MIT-Licence](https://github.com/kitaird/drl-gridworld/blob/develop/resources/game2dboard-LICENSE.txt) under `resources/game2dboard-LICENSE.txt`.
+The rl_board.py is based on the source code ot the python package `game2dboard` which uses the provided [game2dboard-MIT-Licence](https://github.com/kitaird/rl-gridworld/blob/develop/resources/game2dboard-LICENSE.txt) under `resources/game2dboard-LICENSE.txt`.
 The initial `board.py` from `mjbrusso/game2dboard` was extended to contain additional buttons and logic for the purpose of this project.
 
 ## License
-This project is licensed under the MIT License - see the [MIT-Licence](https://github.com/kitaird/drl-gridworld/blob/develop/LICENSE.txt) file for details.
+This project is licensed under the MIT License - see the [MIT-Licence](https://github.com/kitaird/rl-gridworld/blob/develop/LICENSE.txt) file for details.
 
 ## Citation
 If you use this project in your research, please cite it like so:
@@ -81,7 +81,7 @@ If you use this project in your research, please cite it like so:
       title={RL-Gridworld: A RL-Learning Environment},
       author={Adriatik Gashi},
       institution = {Darmstadt University of Applied Sciences},
-      howpublished = {\textsc{url:}~\url{https://github.com/kitaird/drl-gridworld}},
+      howpublished = {\textsc{url:}~\url{https://github.com/kitaird/rl-gridworld}},
       year={2021}
 }
 ```

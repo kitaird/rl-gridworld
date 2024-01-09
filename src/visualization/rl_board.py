@@ -5,7 +5,7 @@ import random
 from collections import UserList
 
 
-class DrlBoard(UserList):
+class RlBoard(UserList):
     """
     A graphical user interface for 2d arrays (matrix)
     """
