@@ -1,4 +1,5 @@
-from tkinter import *
+from tkinter import Tk, Canvas, NW, StringVar, OptionMenu, TOP, Frame, LEFT, Button, Label
+
 import game2dboard
 import random
 from collections import UserList
@@ -260,14 +261,6 @@ class DrlBoard(UserList):
                 for cell in row:
                     cell.bgcolor = value
 
-    def set_cell_color(self, row, col, value):
-        pass
-        # if self._isrunning:
-        #     self._cells[row][col].bgcolor = value
-        #     self._cells[row][col] = value
-        # else:
-        #     self._command_stack.append(lambda: self.set_cell_color(row, col, value))
-
     @property
     def grid_color(self):
         """
@@ -281,7 +274,7 @@ class DrlBoard(UserList):
     def grid_color(self, value):
         self._grid_color = value
         self._canvas.itemconfig(
-            self._bgrect, fill=value if not value is None else '')
+            self._bgrect, fill=value if value is not None else '')
 
     @property
     def cell_size(self):
@@ -297,7 +290,7 @@ class DrlBoard(UserList):
         if self._isrunning:
             raise Exception("Can't resize cells after run()")
         # size is a tuple (width, height)
-        if not type(value) is tuple:
+        if type(value) is not tuple:
             v = int(value)
             value = (v, v)
         # All cells has same size (class field)
@@ -319,10 +312,10 @@ class DrlBoard(UserList):
             self._background_image = value
             if self._bgimage_id:
                 self._canvas.delete(self._bgimage_id)    # clear current image
-            if not value is None:
+            if value is not None:
                 self.grid_color = self.margin_color = self.cell_color = None
                 image = game2dboard.ImageMap.get_instance().load(value)
-                if not image is None:
+                if image is not None:
                     self._image_object = image
                     self._bgimage_id = self._canvas.create_image(  # Draw a image
                         0,
@@ -509,10 +502,10 @@ class DrlBoard(UserList):
             for r in range(self._nrows):
                 for c in range(self._ncols):
                     self[r][c] = value
-        elif not row is None and col is None:  # single row
+        elif row is not None and col is None:  # single row
             for c in range(self._ncols):
                 self[row][c] = value
-        elif row is None and not col is None:   # a single collumn
+        elif row is None and col is not None:   # a single column
             for r in range(self._nrows):
                 self[r][col] = value
         else:
@@ -586,7 +579,7 @@ class DrlBoard(UserList):
         # Window is not resizable
         self._root.resizable(False, False)
         self.background_image = self._background_image  # Draw background image
-        if not self._background_image is None:
+        if self._background_image is not None:
             self.margin_color = self.grid_color = self.cell_color = None
         else:
             self.margin_color = self._margin_color          # Paint background
