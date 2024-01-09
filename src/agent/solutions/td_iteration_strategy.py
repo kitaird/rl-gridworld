@@ -18,32 +18,52 @@ class TdIterationStrategy(IterationStrategy):
         self._step_size = self._config.getfloat(self._agent_name, 'step_size')
         self._episode_threshold = self._config.getint(self._agent_name, 'episode_threshold')
 
+    def run_iteration_impl(self) -> None:
+        self.policy_evaluation()
+        self.policy_improvement()
+
+    def policy_evaluation(self) -> None:
+        evaluation_done = False
+        while not evaluation_done:
+            evaluation_done = self.evaluate_policy()
+
+    def policy_improvement(self) -> None:
+        policy_converged = False
+        while not policy_converged:
+            policy_converged = self.improve_policy()
+
     """
         Use the generate_trajectory method to generate states_and_rewards.
         Iterate through all steps of the trajectory and extract the triple (state, next_state, reward).
         Update the self._env.state_values using the newly computed TD-Error.
         Compare the difference between the current state_value and the new state_value for each state and
         log it in greatest_delta to allow plotting.
-        Update the policy by computing the greedy action for each state using the already existing method
-        self.get_greedy_action_for_state(state).
         At the end of the method, append greatest_delta to self._env.deltas:
         
         self._env.deltas.append(greatest_delta)
         
     """
-    def run_iteration_impl(self) -> None:
+    def evaluate_policy(self) -> bool:
         states_and_rewards = self.generate_trajectory()
-        greatest_delta = 0
+        greatest_value_delta = 0
         for t in range(len(states_and_rewards) - 1):
             state, _ = states_and_rewards[t]
             next_state, reward = states_and_rewards[t + 1]
             old_state_value = self._env.state_values[state]
             new_state_value = self.calculate_state_value(state, next_state, reward)
-            greatest_delta = max(greatest_delta, np.abs(old_state_value - new_state_value))
+            greatest_value_delta = max(greatest_value_delta, np.abs(old_state_value - new_state_value))
             self._env.state_values[state] = new_state_value
-        self._env.deltas.append(greatest_delta)
+        self._env.deltas.append(greatest_value_delta)
+        return True
+
+    """
+        Update the policy by computing the greedy action for each state using the already existing method
+        self.get_greedy_action_for_state(state).
+    """
+    def improve_policy(self) -> bool:
         for state in self._policy.keys():
             self._policy[state] = self.get_greedy_action_for_state(state)
+        return True
 
     def calculate_state_value(self, state, next_state, reward) -> float:
         return self._env.state_values[state] + self._step_size * self.td_error(state, next_state, reward)

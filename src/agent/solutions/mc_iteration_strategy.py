@@ -1,5 +1,7 @@
 import numpy as np
+
 from src.agent.abstract_iteration_strategy import IterationStrategy
+from src.env.state import State
 
 
 class McIterationStrategy(IterationStrategy):
@@ -12,6 +14,7 @@ class McIterationStrategy(IterationStrategy):
         Watch out for infinite loops! Use the episode_threshold to avoid running into
         an infinite loop in the grid world! (e.g. |right|left| -> infinite loop)
     """
+
     def __init__(self, env):
         super().__init__("MONTE CARLO", env)
         self._returns = self.init_returns()
@@ -35,30 +38,55 @@ class McIterationStrategy(IterationStrategy):
             random_init_policy[state.clone()] = np.random.choice(self.env.actions)
         return random_init_policy
 
+    def run_iteration_impl(self) -> None:
+        self.policy_evaluation()
+        self.policy_improvement()
+
+    def policy_evaluation(self) -> None:
+        evaluation_done = False
+        while not evaluation_done:
+            evaluation_done = self.evaluate_policy()
+
+    def policy_improvement(self) -> None:
+        policy_converged = False
+        while not policy_converged:
+            policy_converged = self.improve_policy()
+
     """
         Use the generate_trajectory method to generate states_and_returns.
         Update the values for each seen state using the mean of returns for the given state.
         Compare the difference between the current state_value and the new state_value for each state and
         log it in greatest_delta to allow plotting:
-        
+
         self.env.deltas.append(greatest_delta)
+
+        At the end of the method, append greatest_delta to self.env.deltas.
         
-        At the end of the method, append greatest_delta to self.env.deltas.  
     """
-    def run_iteration_impl(self) -> None:
-        greatest_delta = 0
-        states_and_returns = self.generate_trajectory()
+
+    def evaluate_policy(self, every_visit=True, num_of_trajectories=1) -> bool:
+        greatest_value_delta = 0
+        states_and_returns = [state_return_tuple for _ in range(num_of_trajectories) for state_return_tuple in self.generate_trajectory()]
         seen_states = set()
         for s, G in states_and_returns:
-            if s not in seen_states:
+            if every_visit or s not in seen_states:
                 old_state_value = self.env.state_values[s]
                 self._returns[s].append(G)
                 self.env.state_values[s] = np.mean(self._returns[s])
-                greatest_delta = max(greatest_delta, np.abs(old_state_value - self.env.state_values[s]))
+                greatest_value_delta = max(greatest_value_delta, np.abs(old_state_value - self.env.state_values[s]))
                 seen_states.add(s)
-        self.env.deltas.append(greatest_delta)
+        self.env.deltas.append(greatest_value_delta)
+        return True
+
+    """
+        Update the policy by computing the greedy action for each state using the already existing method
+        self.get_greedy_action_for_state(state).
+    """
+
+    def improve_policy(self) -> bool:
         for state in self._policy.keys():
             self._policy[state] = self.get_greedy_action_for_state(state)
+        return True
 
     """
         Generate a trajectory. Use the self.env.get_random_start_state() to set the self.env.agent_state 
@@ -73,7 +101,8 @@ class McIterationStrategy(IterationStrategy):
         
         This method returns a list of tuples [(state, return), (state', return')]
     """
-    def generate_trajectory(self) -> []:
+
+    def generate_trajectory(self) -> [(State, float)]:
         self.env.agent_state = self.env.get_random_start_state()
 
         states_and_rewards = [(self.env.agent_state, 0)]
