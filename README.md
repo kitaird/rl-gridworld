@@ -1,11 +1,23 @@
-# DRL-gridworld
+# RL-Gridworld: A RL-Learning Environment
+
+Welcome to the __RL-Gridworld__, an open-source resource designed for learning and experimenting with various paradigms in reinforcement learning (RL). 
+This library provides a versatile gridworld environment that can be easily extended and customized, making it an ideal tool for both beginners and experienced practitioners.
 
 This project is an example for using three methods for solving the Bellman equations:
 * Dynamic Programming
 * Monte Carlo Method
 * Temporal Difference Learning
 
-Each approach should be implemented in the respective file and can be selected in the GUI of the GridWorld example.
+Each approach can be implemented in the respective file and can be selected in the GUI of the GridWorld example.
+
+## Features
+* __Extensible Gridworld Environment__: At the core of this library is the gridworld environment, a simple yet powerful tool for demonstrating key concepts in RL. 
+Users can easily modify and extend this environment to suit their learning and research needs.
+  
+* __Support for Multiple RL Paradigms__: The library is built to demonstrate a variety of reinforcement learning techniques, including:
+  * Monte-Carlo Learning
+  * Dynamic Programming
+  * Temporal Difference Learning
 
 ## Environment dynamics
 
@@ -24,6 +36,7 @@ It can be configured the following way:
 * _0_ indicates an accessible state
 * Multiple goals are possible!
 * The dimensions of the grid are adjustable! One can try out multiple sizes and test each algorithm with it!
+* Currently, only random start-positions are supported. Setting a fixed starting point for all episodes will be available soon.
 
 ## Solutions for algorithms
 The solution for the algorithms is in the directory `agents/solutions`. These are currently used in the main.py in order to see that the example is working.
@@ -55,8 +68,20 @@ Here are some examples of the project with implemented algorithms:
 ![Local Image](example-images/Optimal_Policy_DP.png)
 
 ## References
-The drl_board.py is based on the source code ot the python package `game2dboard` which uses the provided MIT-Licence `resources/game2dboard-LICENSE.txt`.
+The drl_board.py is based on the source code ot the python package `game2dboard` which uses the provided [game2dboard-MIT-Licence](https://github.com/kitaird/drl-gridworld/blob/develop/resources/game2dboard-LICENSE.txt) under `resources/game2dboard-LICENSE.txt`.
 The initial `board.py` from `mjbrusso/game2dboard` was extended to contain additional buttons and logic for the purpose of this project.
 
 ## License
-This project is distributed under the XXX license.
+This project is licensed under the MIT License - see the [MIT-Licence](https://github.com/kitaird/drl-gridworld/blob/develop/LICENSE.txt) file for details.
+
+## Citation
+If you use this project in your research, please cite it like so:
+```bibtex
+@misc{gashi2021rl-gridworld,
+      title={RL-Gridworld: A RL-Learning Environment},
+      author={Adriatik Gashi},
+      institution = {Darmstadt University of Applied Sciences},
+      howpublished = {\textsc{url:}~\url{https://github.com/kitaird/drl-gridworld}},
+      year={2021}
+}
+```
