@@ -21,7 +21,7 @@ class Plotter:
 
     def plot_state_value_deltas(self):
         plt.plot(self._env.deltas)
-        plt.xlabel("Episodes")
-        plt.ylabel("State-Value Delta (highest delta per episode")
+        plt.xlabel("Iterations")
+        plt.ylabel("State-Value Delta (highest delta per episode)")
         plt.title("State-Value Convergence")
         plt.show()

@@ -64,7 +64,7 @@ class McIterationStrategy(IterationStrategy):
         
     """
 
-    def evaluate_policy(self, every_visit=True, num_of_trajectories=1) -> bool:
+    def evaluate_policy(self, every_visit=False, num_of_trajectories=1) -> bool:
         greatest_value_delta = 0
         states_and_returns = [state_return_tuple for _ in range(num_of_trajectories) for state_return_tuple in self.generate_trajectory()]
         seen_states = set()
