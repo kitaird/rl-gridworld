@@ -5,7 +5,7 @@ from src.env.gridworld import Gridworld
 from src.env.gym import Gym
 from src.visualization.rl_board import RlBoard
 
-grid_world_layout = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
+grid_world_layout = [['a', 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 1, 1, 0, 1, 0, 1, 1, 0],
                      [0, 0, 1, 0, 0, 0, 1, 0, 0],
                      [0, 1, 1, 1, 1, 0, 1, 0, 0],

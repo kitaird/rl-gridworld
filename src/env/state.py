@@ -1,5 +1,3 @@
-from src.env.action import Action
-
 
 class State:
 
@@ -25,7 +23,7 @@ class State:
     def is_goal(self):
         return self._is_goal
 
-    def apply(self, action: Action):
+    def apply(self, action):
         return (self._row + action.value.row,
                 self._col + action.value.col)
 
