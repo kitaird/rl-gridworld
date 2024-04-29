@@ -9,6 +9,7 @@ class Gridworld:
         self._init_data = init_data
         self._rows = len(init_data)
         self._cols = len(init_data[0])
+        self._start_state = None
         self._states = self._init_gridworld()
 
     def get_new_state(self, state, action):
@@ -27,6 +28,8 @@ class Gridworld:
                 val = self._init_data[row][col]
                 state = create_state(row, col, val)
                 states[(row, col)] = state
+                if val == 'a':
+                    self._start_state = state
         return states
 
     def _is_outside_bounds(self, state_coords):
@@ -53,6 +56,10 @@ class Gridworld:
     @property
     def init_data(self):
         return self._init_data
+
+    @property
+    def start_state(self):
+        return self._start_state
 
 
 def create_state(row, col, val):

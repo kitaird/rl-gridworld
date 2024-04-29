@@ -1,4 +1,3 @@
-import numpy as np
 from src.agent.abstract_iteration_strategy import IterationStrategy
 from src.env.action import Action
 from src.env.state import State
@@ -30,8 +29,8 @@ class McIterationStrategy(IterationStrategy):
             # don't need an array for that state
         return returns
 
-    def reset(self) -> None:
-        super().reset()
+    def clear(self) -> None:
+        super().clear()
         self._returns = self.init_returns()
 
     def random_init_policy(self) -> {State, Action}:

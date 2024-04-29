@@ -627,7 +627,7 @@ class RlBoard(UserList):
         gradient_btn = Button(row_frame, text="Show policy", command=lambda: self.show_wrapper(self.show_policy))
         gradient_btn.pack(side=LEFT)
 
-        reset_btn = Button(row_frame, text="Reset", command=self.reset_action)
+        reset_btn = Button(row_frame, text="Clear", command=self.clear_action)
         reset_btn.pack(side=LEFT)
 
     def set_agent(self, selected_agent_name):
@@ -637,9 +637,9 @@ class RlBoard(UserList):
             self._warning_label.destroy()
             self._warning_label = None
 
-    def reset_action(self):
+    def clear_action(self):
         if self.agent is not None:
-            self._agent.reset()
+            self._agent.clear()
             if self._last_show_command is None:
                 self._last_show_command = self.show_grid
             self._last_show_command()

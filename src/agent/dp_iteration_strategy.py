@@ -23,8 +23,8 @@ class DpIterationStrategy(IterationStrategy):
         self._policy_evaluation_threshold = self._config.getfloat(self._agent_name, 'policy_evaluation_threshold')
         # This threshold makes sure that the policy evaluation ends after the improvements are too insignificant
 
-    def reset(self) -> None:
-        super().reset()
+    def clear(self) -> None:
+        super().clear()
         self._last_state_values = self._env.init_zero_state_values()
 
     def run_iteration_impl(self) -> None:

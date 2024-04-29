@@ -31,12 +31,12 @@ The environment acts the following way:
 
 The grid world layout can be adjusted in the `main.py` file.
 It can be configured the following way:
-* _g_ indicated the goal
+* _g_ indicates the goal
+* _a_ indicates the agent's starting position
 * _1_ indicates a wall
 * _0_ indicates an accessible state
 * Multiple goals are possible!
 * The dimensions of the grid are adjustable! One can try out multiple sizes and test each algorithm with it!
-* Currently, only random start-positions are supported. Setting a fixed starting point for all episodes will be available soon.
 
 ## Solutions for algorithms
 The solution for the algorithms is in the directory `agents/solutions`. These are currently used in the main.py in order to see that the example is working.

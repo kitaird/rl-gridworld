@@ -43,6 +43,12 @@ class Gym:
         return new_state, reward_per_step
 
     def reset(self) -> None:
+        if self.gridworld.start_state is None:
+            self.agent_state = self.get_random_start_state()
+        else:
+            self.agent_state = self.gridworld.start_state
+
+    def clear(self) -> None:
         self._state_values = self.init_zero_state_values()
         self._deltas = []
         self.render()
