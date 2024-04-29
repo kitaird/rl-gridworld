@@ -1,11 +1,11 @@
-from src.env.actions import Actions
+from src.env.action import Action
 from src.env.state import State
 
 
 class Gridworld:
 
     def __init__(self, init_data):
-        self._actions = Actions
+        self._actions = Action
         self._init_data = init_data
         self._rows = len(init_data)
         self._cols = len(init_data[0])

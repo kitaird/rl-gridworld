@@ -3,7 +3,7 @@ from enum import Enum
 from src.env.state import State
 
 
-class Actions(Enum):
+class Action(Enum):
     """Possible jumps: left, right, top, bottom"""
     left = State(0, -1)
     right = State(0, 1)
