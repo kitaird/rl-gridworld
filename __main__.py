@@ -12,11 +12,17 @@ grid_world_layout = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 1, 0, 0, 1, 0, 1],
                      [0, 1, 1, 0, 0, 1, 0, 0, 'g']]
 
-gridworld = Gridworld(grid_world_layout)
-env = Gym(gridworld)
-dp_agent = DpIterationStrategy(env)
-mc_agent = McIterationStrategy(env)
-td_agent = TdIterationStrategy(env)
-agents = [dp_agent, mc_agent, td_agent]
-board = RlBoard(agents, env)
-board.show()
+
+def main():
+    gridworld = Gridworld(grid_world_layout)
+    env = Gym(gridworld)
+    dp_agent = DpIterationStrategy(env)
+    mc_agent = McIterationStrategy(env)
+    td_agent = TdIterationStrategy(env)
+    agents = [dp_agent, mc_agent, td_agent]
+    board = RlBoard(agents, env)
+    board.show()
+
+
+if __name__ == "__main__":
+    main()
