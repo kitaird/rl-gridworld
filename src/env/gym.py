@@ -1,5 +1,6 @@
 import numpy as np
 
+from src.env.action import Action
 from src.env.state import State
 from src.visualization.plotter import Plotter
 
@@ -12,11 +13,12 @@ class Gym:
         self._state_values = self.init_zero_state_values()
         self._plotter = Plotter(self)
         self._deltas = []
+        self._rng = np.random.default_rng(seed=1)
 
-    def get_random_start_state(self):
-        return np.random.choice(self.states)
+    def get_random_start_state(self) -> State:
+        return self._rng.choice(self.states)
 
-    def step(self, state, action) -> (State, float):
+    def step(self, state: State, action: Action) -> (State, float):
         new_state, reward = self.simulate_step(state, action)
         self.agent_state = new_state
         return new_state, reward
@@ -27,7 +29,7 @@ class Gym:
         That has to be done manually afterwards. 
         The reason for this is to be able to use this method for planning only.
     """
-    def simulate_step(self, state, action) -> (State, float):
+    def simulate_step(self, state: State, action: Action) -> (State, float):
         if state.is_goal:
             return state, 0
 
@@ -40,16 +42,16 @@ class Gym:
 
         return new_state, reward_per_step
 
-    def reset(self):
+    def reset(self) -> None:
         self._state_values = self.init_zero_state_values()
         self._deltas = []
         self.render()
 
-    def render(self):
+    def render(self) -> None:
         self._plotter.plot_state_value_deltas()
         self._plotter.pretty_print_to_console()
 
-    def init_zero_state_values(self):
+    def init_zero_state_values(self) -> {State, float}:
         init_state_values = {}
         for state in self.states:
             state_copy = state.clone()
@@ -72,7 +74,7 @@ class Gym:
         return self._agent_state
 
     @agent_state.setter
-    def agent_state(self, state):
+    def agent_state(self, state: State):
         self._agent_state = state
 
     @property
@@ -80,7 +82,7 @@ class Gym:
         return self._state_values
 
     @state_values.setter
-    def state_values(self, new_state_values):
+    def state_values(self, new_state_values: {State, float}):
         self._state_values = new_state_values
 
     @property

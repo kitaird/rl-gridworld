@@ -1,5 +1,7 @@
-import numpy as np
 from src.agent.abstract_iteration_strategy import IterationStrategy
+from src.env.action import Action
+
+from src.env.state import State
 
 
 class DpIterationStrategy(IterationStrategy):
@@ -21,7 +23,7 @@ class DpIterationStrategy(IterationStrategy):
         self._policy_evaluation_threshold = self._config.getfloat(self._agent_name, 'policy_evaluation_threshold')
         # This threshold makes sure that the policy evaluation ends after the improvements are too insignificant
 
-    def reset(self):
+    def reset(self) -> None:
         super().reset()
         self._last_state_values = self._env.init_zero_state_values()
 
@@ -42,19 +44,19 @@ class DpIterationStrategy(IterationStrategy):
     """
         This method should evaluate the current policy using bootstrapping.
         Compare each new state_value to the current state_value.
-        Store this (absolute) difference in the greatest_delta variable for each state, in order to log/plot the biggest delta
-        in one evaluation iteration. Append the greatest_delta for an itaration to self._env.deltas array:
+        Store this (absolute) difference in the greatest_value_delta variable for each state, in order to log/plot the biggest delta
+        in one evaluation iteration. Append the greatest_value_delta for an iteration to self._env.deltas array:
         
-        self.env.deltas.append(greatest_delta)
+        self.env.deltas.append(greatest_value_delta)
         
-        Use self._policy_evaluation_threshold as a stopping condition when the greatest_delta becomes too small.
+        Use self._policy_evaluation_threshold as a stopping condition when the greatest_value_delta becomes too small.
     """
     def evaluate_policy(self) -> bool:
-        greatest_delta = 0
+        greatest_value_delta = 0
         """
             Impl here.
         """
-        return greatest_delta <= self._policy_evaluation_threshold
+        return greatest_value_delta <= self._policy_evaluation_threshold
 
     """
         This method should update self._policy for each state considering the self.action_value()
@@ -72,7 +74,7 @@ class DpIterationStrategy(IterationStrategy):
     """
         Calculate the state_value of the given state using planning.
     """
-    def state_value(self, state) -> float:
+    def state_value(self, state: State) -> float:
         state_value = 0
         """
             Impl here.
@@ -82,7 +84,7 @@ class DpIterationStrategy(IterationStrategy):
     """
         Calculate the action_value of the given state-action-pair using planning.
     """
-    def action_value(self, state, action) -> float:
+    def action_value(self, state: State, action: Action) -> float:
         action_value = 0
         """
             Impl here.

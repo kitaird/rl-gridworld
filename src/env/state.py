@@ -1,6 +1,9 @@
+from src.env.action import Action
+
+
 class State:
 
-    def __init__(self, row, col, is_goal=False, is_wall=False):
+    def __init__(self, row: int, col: int, is_goal: bool = False, is_wall: bool = False):
         self._row = row
         self._col = col
         self._is_goal = is_goal
@@ -22,7 +25,7 @@ class State:
     def is_goal(self):
         return self._is_goal
 
-    def apply(self, action):
+    def apply(self, action: Action):
         return (self._row + action.value.row,
                 self._col + action.value.col)
 
