@@ -3,21 +3,25 @@
 Welcome to the __RL-Gridworld__, an open-source resource designed for learning and experimenting with various paradigms in reinforcement learning (RL). 
 This library provides a versatile gridworld environment that can be easily extended and customized, making it an ideal tool for both beginners and experienced practitioners.
 
-This project is an example for using three methods for solving the Bellman equations:
+This project is an example for using three methods for solving the Bellman equations (Prediction & Control):
 * Dynamic Programming
 * Monte Carlo Method
 * Temporal Difference Learning
 
-Each approach can be implemented in the respective file and can be selected in the GUI of the GridWorld example.
+All prediction and control approaches can be implemented in the respective file and can be selected in the GUI of the GridWorld example.
 
 ## Features
+* __Gymnasium Interface__: The gridworld environment is designed to be compatible with the popular RL-interface [Gymnasium](https://github.com/Farama-Foundation/Gymnasium), allowing users to transition their gained knowledge easily to more sophisticated DRL-libraries.
+
 * __Extensible Gridworld Environment__: At the core of this library is the gridworld environment, a simple yet powerful tool for demonstrating key concepts in RL. 
 Users can easily modify and extend this environment to suit their learning and research needs.
-  
+
 * __Support for Multiple RL Paradigms__: The library is built to demonstrate a variety of reinforcement learning techniques, including:
-  * Monte-Carlo Learning
   * Dynamic Programming
-  * Temporal Difference Learning
+  * On-Policy Monte-Carlo Prediction
+  * On-Policy Monte-Carlo Control (w and w/o exploring starts)
+  * TD Prediction TD(0)
+  * On-Policy TD Control Sarsa
 
 ## Environment dynamics
 
@@ -29,7 +33,7 @@ The environment acts the following way:
 
 ## Configuration
 
-The grid world layout can be adjusted in the `main.py` file.
+The grid world layout can be adjusted in the `__main__.py` file.
 It can be configured the following way:
 * _g_ indicates the goal
 * _a_ indicates the agent's starting position
@@ -40,14 +44,14 @@ It can be configured the following way:
 
 ## Solutions for algorithms
 The solution for the algorithms is in the directory `agents/solutions`. These are currently used in the main.py in order to see that the example is working.
-When assigning the task to the students, the solutions directory should be removed and the regular algorithms (`dp_iteration_strategy.py`, `mc_iteration_strategy.py`, `td_iteration_strategy.py`) referenced in the `main.py`.
+When assigning the task to the students, the solutions directory should be removed and the regular algorithms (`dp_control.py`, `mc_prediction.py`, `mc_control.py`, `td_prediction.py`, `td_control.py`) referenced in the `__main__.py`.
 
 # Installing and running the program
 All required packages are in resources/requirements.txt.
 To install the requirements, execute `pip install -r resources/requirements.txt`.
 Best practice is to create a 'venv' with python version 3.9, then install the `resources/requirements.txt` using the command above with the created venv.
 
-Run the `main.py` file with python 3.9 to run the program!
+Run the `__main__.py` file with python 3.9 to run the program!
 
 ## Example images
 Here are some examples of the project with implemented algorithms:
@@ -55,14 +59,14 @@ Here are some examples of the project with implemented algorithms:
 ### Empty Gridworld
 ![Local Image](example-images/Gridworld.png)
 
+### Empty Gridworld with Agent starting position
+![Local Image](example-images/Agent_Starting_State.png)
+
 ### Initialized Policy
 ![Local Image](example-images/Initialized_Policy.png)
 
-### Initialised State Values
-![Local Image](example-images/Initialized_State_Values.png)
-
-### An iteration of Dynamic Programming
-![Local Image](example-images/Iteration_DP.png)
+### Initialised Action Values
+![Local Image](example-images/Initialized_Action_Values.png)
 
 ### Optimal Policy using Dynamic Programming
 ![Local Image](example-images/Optimal_Policy_DP.png)

@@ -1,8 +1,18 @@
+import random
+from collections import UserList
 from tkinter import Tk, Canvas, NW, StringVar, OptionMenu, TOP, Frame, LEFT, Button, Label
 
 import game2dboard
-import random
-from collections import UserList
+import scipy.stats as stats
+
+from src.env.action import Action
+
+
+def compute_color_for_value(data, value):
+    normalized_value = stats.percentileofscore(data, value)/100
+    red = 255 * (1 - normalized_value)
+    blue = 255 * normalized_value
+    return f'#{int(red):02x}{0:02x}{int(blue):02x}'
 
 
 class RlBoard(UserList):
@@ -621,7 +631,7 @@ class RlBoard(UserList):
         grid_btn = Button(row_frame, text="Show grid", command=lambda: self.show_wrapper(self.show_grid))
         grid_btn.pack(side=LEFT)
 
-        loss_btn = Button(row_frame, text="Show state values", command=lambda: self.show_wrapper(self.show_state_values))
+        loss_btn = Button(row_frame, text="Show values", command=lambda: self.show_wrapper(self.show_values))
         loss_btn.pack(side=LEFT)
 
         gradient_btn = Button(row_frame, text="Show policy", command=lambda: self.show_wrapper(self.show_policy))
@@ -670,14 +680,35 @@ class RlBoard(UserList):
             self._warning_label = Label(self._root, fg='red', textvariable=var)
             self._warning_label.pack()
 
+    def show_values(self):
+        if self._agent.use_state_values:
+            self.show_state_values()
+        else:
+            self.show_action_values()
+
     def show_state_values(self):
+        abs_values = [abs(v) for v in self._agent.state_values.values()]
         for state, state_value in self._agent.state_values.items():
             if state_value is not None:
                 self.fill_field(state.row, state.col, "{:1.3f}".format(state_value))
+                self._cells[state.row][state.col].bgcolor = compute_color_for_value(abs_values, abs(state_value))
+
+    def show_action_values(self):
+        abs_values = [abs(v) for a_v in self._agent.action_values.values() for v in a_v.values()]
+        for state, action_value_dict in self._agent.action_values.items():
+            if action_value_dict is not None:
+                action_values = action_value_dict[Action.UP], action_value_dict[Action.LEFT], action_value_dict[Action.RIGHT], action_value_dict[Action.DOWN]
+                self.fill_field(state.row, state.col, "|     {:1.2f}     |\n{:1.2f} | {:1.2f}\n|     {:1.2f}     |".format(*action_values))
+                abs_act_val = [abs(v) for v in action_values]
+                self._cells[state.row][state.col].bgcolor = compute_color_for_value(abs_values, min(abs_act_val))
 
     def show_policy(self):
         for state, action in self._agent.policy.items():
-            self.fill_field(state.row, state.col, 'g' if state.is_goal else action.name)
+            if state.is_goal:
+                self.fill_field(state.row, state.col, 'g')
+                self._cells[state.row][state.col].bgcolor = 'white'
+            else:
+                self.fill_field(state.row, state.col, action.name)
 
     def _notify_change(self, row, col, new_value):
         if self._cells[row][col] is not None:

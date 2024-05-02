@@ -2,36 +2,33 @@ import numpy as np
 
 from src.env.action import Action
 from src.env.state import State
-from src.visualization.plotter import Plotter
 
 
 class Gym:
 
-    def __init__(self, gridworld):
+    def __init__(self, gridworld, horizon=200):
         self._gridworld = gridworld
         self._agent_state = None
-        self._state_values = self.init_zero_state_values()
-        self._plotter = Plotter(self)
-        self._deltas = []
         self._rng = np.random.default_rng(seed=1)
+        self._episode_threshold: int = horizon
+        self._step_counter: int = 0
 
-    def get_random_start_state(self) -> State:
-        return self._rng.choice(self.states)
+    def step(self, action: Action) -> (State, float, bool, bool):
+        new_state, reward, terminated = self.plan_step(self._agent_state, action)
+        self._agent_state = new_state
+        self._step_counter += 1
+        truncated = self._step_counter >= self._episode_threshold
+        return new_state, reward, terminated, truncated
 
-    def step(self, state: State, action: Action) -> (State, float):
-        new_state, reward = self.simulate_step(state, action)
-        self.agent_state = new_state
-        return new_state, reward
-
-    """
-        ENVIRONMENT KNOWLEDGE METHOD
-        This method only simulates a step and doesn't update the agent's position.
-        That has to be done manually afterwards. 
-        The reason for this is to be able to use this method for planning only.
-    """
-    def simulate_step(self, state: State, action: Action) -> (State, float):
-        if state.is_goal:
-            return state, 0
+    def plan_step(self, state: State, action: Action) -> (State, float, bool):
+        """
+            ENVIRONMENT KNOWLEDGE METHOD
+            This method only simulates a step and doesn't update the agent's position.
+            That has to be done manually afterward.
+            The reason for this is to be able to use this method for planning only.
+        """
+        if state.is_goal:  # We can't perform any action in the goal-state
+            return state, 0, True
 
         if state.is_wall:
             raise ValueError("AgentState can't be wall! State:" + state.__str__())
@@ -40,35 +37,28 @@ class Gym:
 
         reward_per_step = -1
 
-        return new_state, reward_per_step
-
-    def reset(self) -> None:
-        if self.gridworld.start_state is None:
-            self.agent_state = self.get_random_start_state()
-        else:
-            self.agent_state = self.gridworld.start_state
+        return new_state, reward_per_step, new_state.is_goal
 
     def clear(self) -> None:
-        self._state_values = self.init_zero_state_values()
-        self._deltas = []
-        self.render()
+        print("Clear!")
+        self.reset()
 
-    def render(self) -> None:
-        self._plotter.plot_state_value_deltas()
-        self._plotter.pretty_print_to_console()
+    def reset(self) -> State:
+        if self.gridworld.start_state is None:
+            self._agent_state = self.get_random_start_state()
+        else:
+            self._agent_state = self.gridworld.start_state
+        self._step_counter = 0
+        return self._agent_state
 
-    def init_zero_state_values(self) -> {State, float}:
-        init_state_values = {}
-        for state in self.states:
-            state_copy = state.clone()
-            init_state_values[state_copy] = 0.0
-        return init_state_values
+    def get_random_start_state(self) -> State:
+        return self._rng.choice(self.states)
 
-    """
-    This method returns only valid 'states', that means it doesn't return walls.
-    """
     @property
     def states(self):
+        """
+        This method returns only valid 'states', that means it doesn't return walls.
+        """
         return [v for k, v in self._gridworld.states.items() if not v.is_wall]
 
     @property
@@ -76,28 +66,12 @@ class Gym:
         return self._gridworld.actions
 
     @property
-    def agent_state(self):
-        return self._agent_state
-
-    @agent_state.setter
-    def agent_state(self, state: State):
-        self._agent_state = state
-
-    @property
-    def state_values(self):
-        return self._state_values
-
-    @state_values.setter
-    def state_values(self, new_state_values: {State, float}):
-        self._state_values = new_state_values
-
-    @property
-    def deltas(self):
-        return self._deltas
-
-    @property
     def gridworld(self):
         return self._gridworld
+
+    @property
+    def start_state(self):
+        return self._gridworld.start_state
 
     # Properties needed for plotting
     @property
