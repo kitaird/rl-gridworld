@@ -68,6 +68,9 @@ Here are some examples of the project with implemented algorithms:
 ### Initialised Action Values
 ![Local Image](example-images/Initialized_Action_Values.png)
 
+### Converged Action Values
+![Local Image](example-images/Converged_Action_Values.png)
+
 ### Optimal Policy using Dynamic Programming
 ![Local Image](example-images/Optimal_Policy_DP.png)
 
