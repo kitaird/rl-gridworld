@@ -57,22 +57,22 @@ Run the `__main__.py` file with python 3.9 to run the program!
 Here are some examples of the project with implemented algorithms:
 
 ### Empty Gridworld
-![Local Image](example-images/Gridworld.png)
+![Gridworld](example-images/Gridworld.png)
 
 ### Empty Gridworld with Agent starting position
-![Local Image](example-images/Agent_Starting_State.png)
+![Agent Starting State](example-images/Agent_Starting_State.png)
 
 ### Initialized Policy
-![Local Image](example-images/Initialized_Policy.png)
+![Initialized Policy](example-images/Initialized_Policy.png)
 
 ### Initialised Action Values
-![Local Image](example-images/Initialized_Action_Values.png)
+![Initialized Action Values](example-images/Initialized_Action_Values.png)
 
 ### Converged Action Values
-![Local Image](example-images/Converged_Action_Values.png)
+![Converged Action Values](example-images/Converged_Action_Values.png)
 
 ### Optimal Policy using Dynamic Programming
-![Local Image](example-images/Optimal_Policy_DP.png)
+![Optimal Policy: DP](example-images/Optimal_Policy_DP.png)
 
 ## References
 The rl_board.py is based on the source code ot the python package `game2dboard` which uses the provided [game2dboard-MIT-Licence](https://github.com/kitaird/rl-gridworld/blob/develop/resources/game2dboard-LICENSE.txt) under `resources/game2dboard-LICENSE.txt`.
@@ -82,13 +82,13 @@ The initial `board.py` from [mjbrusso/game2dboard](https://github.com/mjbrusso/g
 This project is licensed under the MIT License - see the [MIT-Licence](https://github.com/kitaird/rl-gridworld/blob/develop/LICENSE.txt) file for details.
 
 ## Citation
-If you use this project in your research, please cite it like so:
+If you find this project helpful and use it, please cite it like so:
 ```bibtex
-@misc{gashi2021rl-gridworld,
+@misc{gashi2023rl-gridworld,
       title={RL-Gridworld: A RL-Learning Environment},
       author={Adriatik Gashi},
       institution = {Darmstadt University of Applied Sciences},
       howpublished = {\textsc{url:}~\url{https://github.com/kitaird/rl-gridworld}},
-      year={2021}
+      year={2023}
 }
 ```

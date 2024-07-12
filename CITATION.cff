@@ -7,3 +7,14 @@ authors:
 title: "RL-Gridworld: A RL-Learning Environment"
 date-released: 2023-10-01
 url: "https://github.com/kitaird/rl-gridworld"
+preferred-citation:
+   type: misc
+   authors:
+      - family-names: "Gashi"
+        given-names: "Adriatik"
+        orcid: "https://orcid.org/0009-0001-7594-4888"
+   title: "RL-Gridworld: A RL-Learning Environment"
+   date-released: 2023-10-01
+   institution: "University of Applied Sciences Darmstadt"
+   url: "https://github.com/kitaird/rl-gridworld"
+   
