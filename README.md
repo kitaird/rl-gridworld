@@ -10,6 +10,8 @@ This project is an example for using three methods for solving the Bellman equat
 
 All prediction and control approaches can be implemented in the respective file and can be selected in the GUI of the GridWorld example.
 
+![Agent Starting State](example-images/Agent_Starting_State.png)
+
 ## Features
 * __Gymnasium Interface__: The gridworld environment is designed to be compatible with the popular RL-interface [Gymnasium](https://github.com/Farama-Foundation/Gymnasium), allowing users to transition their gained knowledge easily to more sophisticated DRL-libraries.
 
