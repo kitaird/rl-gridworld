@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from collections import UserList
 from tkinter import Tk, Canvas, NW, StringVar, OptionMenu, TOP, Frame, LEFT, Button, Label
 
@@ -6,13 +7,26 @@ import game2dboard
 import scipy.stats as stats
 
 from src.env.action import Action
+from src.env.state import State
 
 
 def compute_color_for_value(data, value):
     normalized_value = stats.percentileofscore(data, value)/100
-    red = 255 * (1 - normalized_value)
-    blue = 255 * normalized_value
+    blue = 255 * (1 - normalized_value)
+    red = 255 * normalized_value
     return f'#{int(red):02x}{0:02x}{int(blue):02x}'
+
+
+def gridworld_parser(val: State):
+    if val.wall:
+        return 'wall'
+    if val.reward > 0:
+        return f'+{val.reward}'
+    if val.reward < 0:
+        return f'{val.reward}'
+    if val.terminal:
+        return '0'
+    return 'field'
 
 
 class RlBoard(UserList):
@@ -42,11 +56,11 @@ class RlBoard(UserList):
         self.extend([self._BoardRow(ncols, self) for _ in range(nrows)])
 
         self._agent = None
-        self._agents = {a.agent_name: a for a in agents}
+        self._agents = {a.algo_name: a for a in agents}
         self._nrows = nrows
         self._ncols = ncols
         self._isrunning = False
-        self._init_data = environment.init_data
+        self._states = environment.all_states
         self._env = environment
         # Array used to store cells elements (rectangles)
         self._cells = [[None] * ncols for _ in range(nrows)]
@@ -84,12 +98,12 @@ class RlBoard(UserList):
         self._root.bind("<Key>", self._key_press_clbk)
         # register internal mouse callback
         self._canvas.bind("<ButtonPress>", self._mouse_click_clbk)
-        if self._init_data:
+        if self._states:
             self.show_grid()
         self._command_stack = []
         self._last_show_command = None
         self.on_mouse_click = self.print_reward_for_cell
-        self.cell_size = 90
+        self.cell_size = 100
         self.cell_color = "white"
         self._warning_label = None
         self.init_board_title()
@@ -101,7 +115,7 @@ class RlBoard(UserList):
         if self.agent is None:
             self.title = "Grid world game"
         else:
-            self.title = "Grid world game - Current agent: " + self.agent.agent_name
+            self.title = "Grid world game - Current agent: " + self.agent.algo_name
 
     def __getitem__(self, row):             # subscript getter: self[row]
         # Store last accessed row (NOT thread safe... )
@@ -188,7 +202,7 @@ class RlBoard(UserList):
         self[row][col] = value
 
     def show_grid(self):
-        self.load(self._init_data)
+        self.load(self._states)
 
     @property
     def cursor(self):
@@ -534,10 +548,13 @@ class RlBoard(UserList):
         if len(data) < self._nrows:
             raise IndexError()
         for r in range(self._nrows):
-            if len(data[r]) < self._ncols:
+            if len(data) != self._ncols * self._nrows:
                 raise IndexError()
             for c in range(self._ncols):
-                self[r][c] = data[r][c]
+                if self.env.start_state is not None and self.env.start_state.row == r and self.env.start_state.col == c:
+                    self[r][c] = 'agent'
+                else:
+                    self[r][c] = gridworld_parser(data[(r,c)])
 
     def start_timer(self, msecs):
         """
@@ -620,9 +637,9 @@ class RlBoard(UserList):
         row_frame.pack(side=TOP)
 
         var = StringVar(row_frame)
-        agent_names = list(self._agents.keys())
+        algo_names = list(self._agents.keys())
         var.set("Select an agent")
-        drop_down = OptionMenu(row_frame, var, *agent_names, command=self.set_agent)
+        drop_down = OptionMenu(row_frame, var, *algo_names, command=self.set_agent)
         drop_down.pack()
 
         iterate_btn = Button(row_frame, text="Iterate", command=self.iterate_action)
@@ -640,8 +657,8 @@ class RlBoard(UserList):
         reset_btn = Button(row_frame, text="Clear", command=self.clear_action)
         reset_btn.pack(side=LEFT)
 
-    def set_agent(self, selected_agent_name):
-        self._agent = self._agents[selected_agent_name]
+    def set_agent(self, selected_algo_name):
+        self._agent = self._agents[selected_algo_name]
         self.init_board_title()
         if self._warning_label is not None:
             self._warning_label.destroy()
@@ -658,7 +675,7 @@ class RlBoard(UserList):
 
     def iterate_action(self):
         if self.agent is not None:
-            self._agent.run_iterations()
+            self._agent.run()
             if self._last_show_command is None:
                 self._last_show_command = self.show_grid
             self._last_show_command()
@@ -681,34 +698,43 @@ class RlBoard(UserList):
             self._warning_label.pack()
 
     def show_values(self):
-        if self._agent.use_state_values:
+        if hasattr(self._agent, 'state_values'):
             self.show_state_values()
         else:
             self.show_action_values()
 
     def show_state_values(self):
-        abs_values = [abs(v) for v in self._agent.state_values.values()]
-        for state, state_value in self._agent.state_values.items():
+        min_abs_value = np.abs(min(self._agent.state_values.all_values()))
+        abs_values = self._agent.state_values.all_values() + min_abs_value
+        for state, state_value in self._agent.state_values._values.items():
             if state_value is not None:
                 self.fill_field(state.row, state.col, "{:1.3f}".format(state_value))
-                self._cells[state.row][state.col].bgcolor = compute_color_for_value(abs_values, abs(state_value))
+                self._cells[state.row][state.col].bgcolor = compute_color_for_value(abs_values, state_value + min_abs_value)
 
     def show_action_values(self):
-        abs_values = [abs(v) for a_v in self._agent.action_values.values() for v in a_v.values()]
-        for state, action_value_dict in self._agent.action_values.items():
+        min_abs_value = np.abs(min(self._agent.action_values.all_values()))
+        abs_values = self._agent.action_values.all_values() + min_abs_value
+        for state, action_value_dict in self._agent.action_values._values.items():
             if action_value_dict is not None:
-                action_values = action_value_dict[Action.UP], action_value_dict[Action.LEFT], action_value_dict[Action.RIGHT], action_value_dict[Action.DOWN]
-                self.fill_field(state.row, state.col, "|     {:1.2f}     |\n{:1.2f} | {:1.2f}\n|     {:1.2f}     |".format(*action_values))
-                abs_act_val = [abs(v) for v in action_values]
-                self._cells[state.row][state.col].bgcolor = compute_color_for_value(abs_values, min(abs_act_val))
+                action_values_string = self.get_formatted_action_value_string(action_value_dict)
+                self.fill_field(state.row, state.col, action_values_string)
+                action_probabilities = self._agent.policy[state]
+                weighted_action_value = sum([action_probabilities[a] * action_value_dict[a] for a in self._env.actions]) + min_abs_value
+                self._cells[state.row][state.col].bgcolor = compute_color_for_value(abs_values, weighted_action_value)
+
+    def get_formatted_action_value_string(self, action_values):
+        num_of_actions = len(self._env.actions)
+        if num_of_actions == 4:
+            return "|     {:1.2f}     |\n{:1.2f} | {:1.2f}\n|     {:1.2f}     |".format(action_values[Action.N], action_values[Action.W], action_values[Action.E], action_values[Action.S])
+        elif num_of_actions == 8:
+            return "{:1.1f} \\ {:1.1f} / {:1.1f}\n{:1.1f} |        | {:1.1f}\n{:1.1f} / {:1.1f} \\ {:1.1f}".format(action_values[Action.NW],action_values[Action.N],action_values[Action.NE], action_values[Action.W], action_values[Action.E], action_values[Action.SW], action_values[Action.S], action_values[Action.SE])
+        else:
+            raise ValueError("Invalid number of actions")
 
     def show_policy(self):
-        for state, action in self._agent.policy.items():
-            if state.is_goal:
-                self.fill_field(state.row, state.col, 'g')
-                self._cells[state.row][state.col].bgcolor = 'white'
-            else:
-                self.fill_field(state.row, state.col, action.name)
+        for state, action_probs in self._agent.policy.state_action_probabilities.items():
+            action = max(self.env.actions, key=lambda a: action_probs[a])
+            self.fill_field(state.row, state.col, action.name)
 
     def _notify_change(self, row, col, new_value):
         if self._cells[row][col] is not None:
@@ -716,8 +742,7 @@ class RlBoard(UserList):
 
     # Config the canvas size
     def _resize_canvas(self):
-        self._canvas.config(width=self._canvas_width,
-                            height=self._canvas_height)
+        self._canvas.config(width=self._canvas_width, height=self._canvas_height)
 
         x1 = y1 = self.margin
         x2 = self._canvas_width - x1
