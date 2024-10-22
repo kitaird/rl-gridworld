@@ -1,34 +1,52 @@
 
 class State:
 
-    def __init__(self, row: int, col: int, is_goal: bool = False, is_wall: bool = False):
+    def __init__(self, row: int, col: int, reward: float = 0, is_wall: bool = False, is_terminal: bool = False):
         self._row = row
         self._col = col
-        self._is_goal = is_goal
-        self._is_wall = is_wall
+        self._reward = reward
+        self._wall = is_wall
+        self._terminal = is_terminal
 
     @property
-    def row(self):
+    def row(self) -> int:
         return self._row
 
     @property
-    def col(self):
+    def col(self) -> int:
         return self._col
 
     @property
-    def is_wall(self):
-        return self._is_wall
+    def wall(self) -> bool:
+        return self._wall
+
+    @wall.setter
+    def wall(self, is_wall: bool) -> None:
+        self._wall = is_wall
+        self.reward = 0
 
     @property
-    def is_goal(self):
-        return self._is_goal
+    def terminal(self) -> bool:
+        return self._terminal
 
-    def apply(self, action):
+    @terminal.setter
+    def terminal(self, is_terminal: bool) -> None:
+        self._terminal = is_terminal
+
+    @property
+    def reward(self) -> float:
+        return self._reward
+
+    @reward.setter
+    def reward(self, rew: float) -> None:
+        self._reward = rew
+
+    def apply(self, action) -> tuple[int, int]:
         return (self._row + action.value.row,
                 self._col + action.value.col)
 
-    def clone(self):
-        return State(self._row, self._col, self._is_goal, self._is_wall)
+    def clone(self) -> "State":
+        return State(self._row, self._col, reward=self._reward, is_wall=self._wall, is_terminal=self._terminal)
 
     def __repr__(self):
         return self.__str__()
