@@ -43,6 +43,9 @@ The environment acts the following way, but can be configured freely as describe
 ## Configuration
 
 The gridworld layout can be adjusted in the `src/env/gridworld-config.yml` file.
+Multiple terminal states are possible.
+Rewards and terminal states are decoupled.
+The dimensions of the grid are adjustable. One can try out multiple sizes and test each algorithm with it.
 It can be configured the following way:
 ### Gridworld configuration
 * **Horizon**: The maximum number of steps the agent can take in the environment (defines truncation)
@@ -53,22 +56,19 @@ It can be configured the following way:
   * **.** : indicates an accessible state
   * **t** : indicates a terminal state
 * **Rewards**:
-  * **#** : indicates a reward issued when entering that state (where # is any int or float, else the default reward is 0)
+  * **#** : indicates a reward issued when entering that state (where # is any int or float, else the default reward is `0`)
 * **Reward_per_step**: The reward issued for every step the agent takes
-* Multiple terminal states are possible.
-* Rewards and terminal states are decoupled.
-* The dimensions of the grid are adjustable. One can try out multiple sizes and test each algorithm with it.
 
 ## Solutions for algorithms
 The solutions for the algorithms are in the directory `agents/solutions/...`.
 When assigning the task to the students, the solutions directory should be removed and the `agents/templates/...` versions should be referenced in the `__main__.py`.
 
 # Installing and running the program
-All required packages are in resources/requirements.txt.
+All required packages are in `resources/requirements.txt`.
 To install the requirements, execute `pip install -r resources/requirements.txt`.
-Best practice is to create a 'venv' with python version 3.9, then install the `resources/requirements.txt` using the command above with the created venv.
+Best practice is to create a 'venv' with python version 3.12, then install the `resources/requirements.txt` using the command above with the created venv.
 
-Run the `__main__.py` file with python 3.9 to run the program!
+Run the `__main__.py` file with python 3.12 to run the program!
 
 ## Example images
 Here are some examples of the project with implemented algorithms:
