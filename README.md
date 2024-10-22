@@ -1,4 +1,4 @@
-# RL-Gridworld: A Reinforcement Learning - "Learning" Environment
+# RL-Gridworld: A RL-Learning Environment
 
 Welcome to the __RL-Gridworld__, an open-source resource designed for learning and experimenting with various paradigms in reinforcement learning (RL). 
 This library provides a versatile gridworld environment that can be easily extended and customized, demonstrating how RL-Algorithms achieve their solutions.
@@ -60,7 +60,7 @@ It can be configured the following way:
 * The dimensions of the grid are adjustable. One can try out multiple sizes and test each algorithm with it.
 
 ## Solutions for algorithms
-The solutions for the algorithms are in the directory `agents/solutions/...`. These are currently used in the `__main__.py` in order to see that the example is working.
+The solutions for the algorithms are in the directory `agents/solutions/...`.
 When assigning the task to the students, the solutions directory should be removed and the `agents/templates/...` versions should be referenced in the `__main__.py`.
 
 # Installing and running the program
