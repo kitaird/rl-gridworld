@@ -72,28 +72,28 @@ class QLearning:
             Update action values after each step. Let epsilon decay after each step.
             At the end, append the total return of the episode to the returns list for plotting.
         """
-        pass
+        raise NotImplementedError()
 
     def update_action_value(self, state, action, reward, new_state) -> None:
         """
             TODO: Update the action value function using the Q-Learning update rule.
         """
-        pass
+        raise NotImplementedError()
 
     def calculate_action_value(self, s: State, a: Action, r: float, new_s: State) -> float:
         """
             TODO: Calculate the action value.
         """
-        pass
+        raise NotImplementedError()
 
     def q_learning_error(self, s: State, a: Action, r: float, new_s: State) -> float:
         """
             TODO: Calculate the Q-Learning-Error.
         """
-        pass
+        raise NotImplementedError()
 
     def q_learning_target(self, reward: float, new_s: State) -> float:
         """
             TODO: Calculate Q-Learning-Target.
         """
-        pass
+        raise NotImplementedError()

@@ -69,13 +69,13 @@ class OffPolicyNStepQSigma:
             Use self.select_sigma for choosing sigma each step.
             At the end, append the total return of the episode to the returns list for plotting.
         """
-        pass
+        raise NotImplementedError()
 
     def calculate_return(self, T, t, tau, stored_actions, stored_rewards, stored_rho, stored_sigma, stored_states) -> float:
         """
             TODO: Calculate the return G.
         """
-        pass
+        raise NotImplementedError()
 
     def select_sigma(self, last_sigma) -> float:
         """
