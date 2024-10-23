@@ -29,7 +29,7 @@ class ValueIteration:
         # This threshold makes sure that the policy evaluation ends after the improvements are too insignificant
         self._policy_evaluation_threshold: float = self.config['policy_evaluation_threshold']
         self.state_values: StateValueFunction = StateValueFunction(env=self.env, init_value=self.config['value_function_init'])
-        self.policy: Policy = self.infer_deterministic_policy()
+        self.policy: Policy = DeterministicPolicy(state_space=self.env.valid_states, action_space=self.env.actions)
 
     def clear(self) -> None:
         self.env.clear()
@@ -65,7 +65,7 @@ class ValueIteration:
 
             This method performs an asynchronous update, meaning that the state_values are updated in place.
         """
-        pass
+        raise NotImplementedError()
 
     def evaluate_synchronously(self) -> bool:
         """
@@ -76,17 +76,17 @@ class ValueIteration:
 
             This method performs a synchronous update, meaning that the state_values are updated all at once.
         """
-        pass
+        raise NotImplementedError()
 
     def infer_deterministic_policy(self) -> DeterministicPolicy:
         """
             TODO: Infer the policy from scratch considering the current action_values.
         """
-        pass
+        raise NotImplementedError()
 
     def calculate_action_value(self, state, action) -> float:
         """
             TODO: Calculate the action_value of the given state-action-pair using planning.
             Remember the edge case when the next_state is terminal.
         """
-        pass
+        raise NotImplementedError()
