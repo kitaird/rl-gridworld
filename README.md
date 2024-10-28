@@ -65,6 +65,9 @@ Best practice is to create a 'venv' with python version 3.12, then install the `
 
 Run the `__main__.py` file with python 3.12 to run the program!
 
+For Mac users if there are issues with `_tkinter`, installing python-tk might be helpful.
+
+
 ## Example images
 Here are some examples of the project with implemented algorithms:
 
