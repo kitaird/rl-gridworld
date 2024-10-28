@@ -11,9 +11,10 @@ from src.env.state import State
 from src.visualization.plotter import plot_value_function_sums, plot_returns
 
 
-class NStepSarsa:
+class NStepExpectedSarsa:
     """
-        Implements the n-step Sarsa algorithm.
+        TODO: Requires fixup.
+        Implements the n-step Expected Sarsa algorithm.
 
         This algorithm updates the action value function based on n-step returns.
         It follows an epsilon-soft policy and uses a decaying epsilon for exploration.
@@ -22,7 +23,7 @@ class NStepSarsa:
     """
 
     def __init__(self, env):
-        self.algo_name: str = "n-step Sarsa"
+        self.algo_name: str = "n-step Expected Sarsa"
         with open(Path(__file__).parent.parent / 'algorithms-config.yml') as f:
             self.config = yaml.safe_load(f)[self.algo_name]
         self.env: Gym = env
