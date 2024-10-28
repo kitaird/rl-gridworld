@@ -18,8 +18,7 @@ Users can easily modify and extend this environment to suit their learning and r
     * Policy Iteration 
     * Value Iteration
   * Monte Carlo Methods:
-    * On-Policy Monte-Carlo Control
-    * On-Policy Monte-Carlo Control with Exploring Starts
+    * On-Policy Monte-Carlo Control (w/o Exploring Starts)
     * Off-Policy Monte-Carlo Control
   * Temporal Difference Learning:
     * Sarsa
