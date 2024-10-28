@@ -59,10 +59,6 @@ It can be configured the following way:
   * **#** : indicates a reward issued when entering that state (where # is any int or float, else the default reward is `0`)
 * **Reward_per_step**: The reward issued for every step the agent takes
 
-## Solutions for algorithms
-The solutions for the algorithms are in the directory `agents/solutions/...`.
-When assigning the task to the students, the solutions directory should be removed and the `agents/templates/...` versions should be referenced in the `__main__.py`.
-
 # Installing and running the program
 All required packages are in `resources/requirements.txt`.
 To install the requirements, execute `pip install -r resources/requirements.txt`.
