@@ -19,17 +19,9 @@ Users can easily modify and extend this environment to suit their learning and r
     * Value Iteration
   * Monte Carlo Methods:
     * On-Policy Monte-Carlo Control (w/o Exploring Starts)
-    * Off-Policy Monte-Carlo Control
   * Temporal Difference Learning:
     * Sarsa
-    * Expected Sarsa
     * Q-Learning
-  * N-Step bootstrapping:
-    * N-Step Sarsa
-    * N-Step 
-    * N-Step Tree Backup
-    * Off-Policy N-Step Sarsa
-    * Off-Policy N-Step Q(sigma)
 
 ## Environment dynamics
 
