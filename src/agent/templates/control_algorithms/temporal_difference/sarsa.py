@@ -81,7 +81,7 @@ class Sarsa:
         """
         raise NotImplementedError()
 
-    def åcalculate_action_value(self, s: State, a: Action, r: float, new_s: State) -> float:
+    def calculate_action_value(self, s: State, a: Action, r: float, new_s: State) -> float:
         """
             TODO: Calculate the action value.
         """
