@@ -84,9 +84,9 @@ class ValueIteration:
         """
         raise NotImplementedError()
 
-    def calculate_action_value(self, state, action) -> float:
+    def calculate_state_value(self, state) -> float:
         """
-            TODO: Calculate the action_value of the given state-action-pair using planning.
-            Remember the edge case when the next_state is terminal.
+           TODO: Calculate the state_value of the given state using planning and the current policy.
         """
         raise NotImplementedError()
+
