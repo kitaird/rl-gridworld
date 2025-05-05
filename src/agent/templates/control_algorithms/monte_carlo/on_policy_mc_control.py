@@ -73,7 +73,7 @@ class OnPolicyMcControl:
 
     def policy_evaluation(self) -> None:
         """
-            TODO: Use the generate_trajectory method to collect self._num_of_episodes_to_collect experience.
+            TODO: Use the generate_trajectory method to collect self._num_of_episodes_to_collect experience(s).
             Calculate the return G for each state-action pair.
             Update the values for each seen state-action pair using the return.
             Implement the first-visit and every-visit method depending on the self._use_every_visit flag.
@@ -81,11 +81,28 @@ class OnPolicyMcControl:
         """
         raise NotImplementedError()
 
-    def compute_action_value(self, s: State, a: Action, G: float) -> float:
+    def compute_action_value(self, s: State, a: Action, return_value: float) -> float:
         """
-            TODO: Compute the new action value for the given state-action pair.
-            If self.step_size is None, return the true mean, else a sliding average.
+        Compute the new action value for the given state-action pair.
+
+        Args:
+            s: Current state
+            a: Selected action
+            return_value: Return value (G) for the state-action pair
+
+        Returns:
+            float: Updated action value
         """
+        if self.step_size is None:
+            return self._compute_true_mean(s, a, return_value)
+        return self._compute_sliding_average(s, a, return_value)
+
+    def _compute_true_mean(self, s: State, a: Action, return_value: float) -> float:
+        """Calculate true mean by appending return value to history."""
+        raise NotImplementedError()
+
+    def _compute_sliding_average(self, s: State, a: Action, return_value: float) -> float:
+        """Calculate sliding average using step size."""
         raise NotImplementedError()
 
     def infer_epsilon_soft_policy(self) -> Policy:
