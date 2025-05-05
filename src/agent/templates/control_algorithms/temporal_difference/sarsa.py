@@ -69,7 +69,7 @@ class Sarsa:
     def run_episode(self) -> None:
         """
             TODO: Start an episode following the agent's policy until a terminal state (terminated) or timeout (truncated) is reached.
-            Resets the environment to get the initial state. Select actions based on an epsilon-greedy policy.
+            Reset the environment to get the initial state. Select actions based on an epsilon-greedy policy.
             Update action values after each step. Let epsilon decay after each step.
             At the end, append the total return of the episode to the returns list for plotting.
         """

@@ -1,8 +1,9 @@
 from pathlib import Path
 
+import copy # type: ignore
 import yaml
 
-from src.agent.common.policies import DeterministicPolicy, Policy
+from src.agent.common.policies import DeterministicPolicy, Policy, RandomDeterministicPolicy
 from src.agent.common.value_functions import StateValueFunction
 from src.env.gym import Gym
 from src.visualization.plotter import plot_value_function_sums
@@ -29,13 +30,13 @@ class ValueIteration:
         # This threshold makes sure that the policy evaluation ends after the improvements are too insignificant
         self._policy_evaluation_threshold: float = self.config['policy_evaluation_threshold']
         self.state_values: StateValueFunction = StateValueFunction(env=self.env, init_value=self.config['value_function_init'])
-        self.policy: Policy = DeterministicPolicy(state_space=self.env.valid_states, action_space=self.env.actions)
+        self.policy: DeterministicPolicy = RandomDeterministicPolicy(state_space=self.env.valid_states, action_space=self.env.actions)
 
     def clear(self) -> None:
         self.env.clear()
         self._value_functions_sum: list[float] = []
         self.state_values = StateValueFunction(env=self.env, init_value=self.config['value_function_init'])
-        self.policy = self.infer_deterministic_policy()
+        self.policy = RandomDeterministicPolicy(state_space=self.env.valid_states, action_space=self.env.actions)
 
     def run(self) -> None:
         for _ in range(self._iterations):
@@ -73,20 +74,20 @@ class ValueIteration:
             Compare each new state_value to the current state_value.
             Use self._policy_evaluation_threshold as a stopping condition when
             the value deltas become too small.
-
             This method performs a synchronous update, meaning that the state_values are updated all at once.
+            Hint: Make use of the copy module to create a deep copy of the state_values.
         """
         raise NotImplementedError()
 
     def infer_deterministic_policy(self) -> DeterministicPolicy:
         """
-            TODO: Infer the policy from scratch considering the current action_values.
+            TODO: Infer the policy from scratch considering the current state_values.
         """
         raise NotImplementedError()
 
     def calculate_state_value(self, state) -> float:
         """
-           TODO: Calculate the state_value of the given state using planning and the current policy.
+            TODO: Calculate the state_value of the provided state under the current policy using planning.
+            Remember the edge case when the next_state is terminal.
         """
         raise NotImplementedError()
-
