@@ -3,7 +3,8 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from src.agent.common.policies import Policy, create_epsilon_soft_policy
+from src.agent.common.policies import Policy, create_epsilon_soft_policy, DeterministicPolicy, RandomDeterministicPolicy, \
+    create_greedy_policy
 from src.agent.common.value_functions import ActionValueFunction
 from src.env.action import Action
 from src.env.gym import Gym
@@ -20,9 +21,9 @@ class QLearning:
         For reference, see Sutton & Barto, Reinforcement Learning: An Introduction, 2018, p. 131, chapter 6.5, Q-Learning: Off-policy TD Control.
     """
 
-    def __init__(self, env):
+    def __init__(self, env, config_path=None):
         self.algo_name: str = "Q-Learning"
-        with open(Path(__file__).parent.parent / 'algorithms-config.yml') as f:
+        with open(Path(__file__).parent.parent / 'algorithms-config.yml' if config_path is None else config_path) as f:
             self.config = yaml.safe_load(f)[self.algo_name]
         self.env: Gym = env
         self.discount_factor: float = self.config['discount_factor']
@@ -37,7 +38,9 @@ class QLearning:
         self._returns: list[float] = []
         self._value_functions_sum: list[float] = []
         self.action_values: ActionValueFunction = ActionValueFunction(env=self.env, init_value=self.config['value_function_init'])
-        self.policy: Policy = create_epsilon_soft_policy(self.action_values, self.epsilon)
+        self.target_policy: Policy = RandomDeterministicPolicy(state_space=self.env.valid_states, action_space=self.env.actions)
+        self.behaviour_policy: Policy = RandomDeterministicPolicy(state_space=self.env.valid_states, action_space=self.env.actions)
+        self.policy: Policy = self.target_policy
 
     def clear(self) -> None:
         self.env.clear()
@@ -46,7 +49,8 @@ class QLearning:
         self._value_functions_sum = []
         self.epsilon = self.config['epsilon']
         self.action_values = ActionValueFunction(env=self.env, init_value=self.config['value_function_init'])
-        self.policy = create_epsilon_soft_policy(self.action_values, self.epsilon)
+        self.target_policy: Policy = RandomDeterministicPolicy(state_space=self.env.valid_states, action_space=self.env.actions)
+        self.behaviour_policy: Policy = RandomDeterministicPolicy(state_space=self.env.valid_states, action_space=self.env.actions)
 
     def run(self) -> None:
         for _ in range(self._get_iteration_size):
@@ -62,7 +66,8 @@ class QLearning:
 
     def run_iteration(self) -> None:
         self.run_episode()
-        self.policy = create_epsilon_soft_policy(self.action_values, self.epsilon)
+        self.target_policy = create_greedy_policy(self.action_values)
+        self.behaviour_policy = create_epsilon_soft_policy(self.action_values, self.epsilon)
         self._value_functions_sum.append(self.action_values.sum())
 
     def run_episode(self) -> None:

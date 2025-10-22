@@ -732,7 +732,7 @@ class RlBoard(UserList):
             raise ValueError("Invalid number of actions")
 
     def show_policy(self):
-        for state, action_probs in self._agent.policy.state_action_probabilities.items():
+        for state, action_probs in self._agent.policy.stochastic_policy_mapping.items():
             action = max(self.env.actions, key=lambda a: action_probs[a])
             self.fill_field(state.row, state.col, action.name)
 

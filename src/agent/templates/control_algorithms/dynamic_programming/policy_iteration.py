@@ -17,9 +17,9 @@ class PolicyIteration:
         For reference, see Sutton & Barto, Reinforcement Learning: An Introduction, 2018, p. 80, chapter 4.3, Policy Iteration.
     """
 
-    def __init__(self, env):
+    def __init__(self, env, config_path=None):
         self.algo_name: str = "Policy Iteration"
-        with open(Path(__file__).parent.parent / 'algorithms-config.yml') as f:
+        with open(Path(__file__).parent.parent / 'algorithms-config.yml' if config_path is None else config_path) as f:
             self.config = yaml.safe_load(f)[self.algo_name]
         self.env: Gym = env
         self.discount_factor: float = self.config['discount_factor']
@@ -89,5 +89,14 @@ class PolicyIteration:
         """
             TODO: Calculate the state_value of the provided state under the current policy using planning.
             Remember the edge case when the next_state is terminal.
+            This method should be used for the evaluate methods.
+        """
+        raise NotImplementedError()
+
+    def calculate_action_value(self, state, action) -> float:
+        """
+            TODO: Calculate the action_value of the given state-action-pair using planning.
+            Remember the edge case when the next_state is terminal.
+            This method should be used for the improvement method.
         """
         raise NotImplementedError()
